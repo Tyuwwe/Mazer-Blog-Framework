@@ -40,6 +40,7 @@ export default {
   },
   methods: {
     enterArticle(sData) {
+      window.scroll(0, 0);
       this.$router.push({name: "article", query: sData})
     }
   }

@@ -35,7 +35,7 @@ export default {
     methods: {
         async fetchText() {
             try {
-                const response = await axios.get('http://localhost:5000/test');
+                const response = await axios.get('http://localhost:5000/test/' + this.sourceData.id);
                 this.articleMain.text = response.data.html;
                 setTimeout(() => {
                     Prism.highlightAll();
@@ -90,7 +90,7 @@ export default {
 <style scoped>
 .HomeArticleContainer {
     width: 100%;
-    color: white;
+    color: var(--primary-text-dark);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -107,7 +107,7 @@ export default {
 }
 
 .main-text {
-    background-color: #373a3f;
+    background-color: var(--bs-tertiary-bg);
     padding: 20px;
     box-sizing: border-box;
     width: 100%;
@@ -118,11 +118,12 @@ export default {
 
 <style>
 .main-text a {
-    color: #a0c3ff;
+    color: var(--bs-primary);
+    filter: brightness(1.4);
 }
 
 .main-text a:hover {
-    color: #88a9e1;
+    opacity: 0.5;
 }
 
 .main-text table {
@@ -130,14 +131,19 @@ export default {
     box-sizing: border-box;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: #2d2d2d;
+    background-color: var(--bs-secondary-bg);
 }
 
 .main-text tr, 
 .main-text td,
 .main-text th  {
-    border: rgb(150, 150, 150) 2px solid;
+    border: rgb(170, 170, 170) 1px solid;
     padding: 5px;
+}
+
+.main-text img {
+    width: 100%;
+    object-fit: contain;
 }
 
 .math {
@@ -145,7 +151,7 @@ export default {
 }
 
 .inline-math {
-    background-color: #2d2d2d;
+    background-color: var(--bs-secondary-bg);
     padding: 5px;
     border-radius: 5px;
 }
@@ -161,7 +167,6 @@ export default {
 .block-math {
     text-align: center;
     padding-top: 10px;
-    padding-bottom: 10px;
 }
 
 .block-math-container:hover .cp-formula {
@@ -171,6 +176,9 @@ export default {
 .cp-formula {
     opacity: 0;
     transition: opacity 0.4s !important;
+    z-index: 200;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .cp-formula:active {

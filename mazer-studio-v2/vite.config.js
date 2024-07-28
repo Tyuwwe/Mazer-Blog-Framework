@@ -11,7 +11,7 @@ export default defineConfig({
     prismjsPlugin({
       languages: 'all',
       plugins: ['line-numbers','show-language','copy-to-clipboard','inline-color'],
-      theme: 'tomorrow',
+      theme: 'Twilight',
       css: true,
     })
   ],

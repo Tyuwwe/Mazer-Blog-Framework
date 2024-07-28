@@ -25,9 +25,12 @@ class HighlightRenderer(mistune.HTMLRenderer):
     def block_math(self, text):
         return f'<div class="block-math-container"><div class="math block-math">{text}</div><button class="cp-formula btn btn-secondary btn-sm" data="{text}">Copy Formula</button></div>'
 
-@app.route('/test', methods=['GET'])
-def test():
-    with open('./example/example.md', 'r', encoding='utf-8') as file:
+@app.route('/test/<int:test_id>', methods=['GET'])
+def test(test_id):
+    fileAddr = './example/1.md'
+    if test_id == 2 :
+        fileAddr = './example/example.md'
+    with open(fileAddr, 'r', encoding='utf-8') as file:
         mdText = file.read()
         markdown = mistune.create_markdown(renderer=HighlightRenderer(), plugins=['math', 'table'])
         

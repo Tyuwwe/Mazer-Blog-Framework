@@ -144,26 +144,26 @@ Some text to show that the reference links can follow later.
 ## Images
 
 ```no-highlight
-Here's our logo (hover to see the title text):
+Here's an example image:
 
 Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+![alt text](https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/themes/3067767/settings_images/omx3KZGSamzipD0jXUwg_file.jpg "Logo Title Text 1")
 
 Reference-style: 
 ![alt text][logo]
 
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[logo]: https://i.morioh.com/2019/12/17/f1ce6a0af5cb.jpg "Logo Title Text 2"
 ```
 
-Here's our logo (hover to see the title text):
+Here's an example image:
 
 Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+![alt text](https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/themes/3067767/settings_images/omx3KZGSamzipD0jXUwg_file.jpg "Logo Title Text 1")
 
 Reference-style: 
 ![alt text][logo]
 
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[logo]: https://i.morioh.com/2019/12/17/f1ce6a0af5cb.jpg "Logo Title Text 2"
 
 ## Code and Syntax Highlighting
 
