@@ -34,7 +34,8 @@ import { RouterLink, RouterView } from 'vue-router'
             </ul>
           </li>
           <li class="nav-item">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModel">Login</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+              data-bs-target="#loginModel">Login</button>
           </li>
         </ul>
         <form class="d-flex" role="search">
@@ -45,34 +46,57 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
   </nav>
 
-  
+
   <RouterView />
 
   <div class="modal fade" id="loginModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5 text-reset">Login</h1>
+          <h1 v-show="bLogin" class="modal-title fs-5 text-reset">Login</h1>
+          <h1 v-show="!bLogin" class="modal-title fs-5 text-reset">Signup</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="form-floating mb-3">
-          <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-          <label for="floatingInput">Email address</label>
+            <input v-model="submitForm.usr" type="email" class="form-control" id="floatingInput" placeholder="Email address">
+            <label for="floatingInput">Email address</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input v-model="submitForm.psw" type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+          </div>
+          <div v-show="bLogin" class="form-floating">
+            <input v-model="submitForm.twofa" type="password" class="form-control" id="floating2FA" placeholder="2FA Passcode" disabled>
+            <label for="floating2FA">2FA Passcode</label>
+          </div>
+          <div v-show="bLogin" class="form-text">No account? <span class="clickText"
+              @click="switchLogin(false)">Signup</span> now.</div>
+          <div v-show="!bLogin" class="form-text">Have an account? <span class="clickText"
+              @click="switchLogin(true)">Login</span> now.</div>
         </div>
-        <div class="form-floating mb-3">
-          <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-          <label for="floatingPassword">Password</label>
-        </div>
-        <div class="form-floating">
-          <input type="password" class="form-control" id="floating2FA" placeholder="2FA Passcode">
-          <label for="floatingPassword">2FA Passcode</label>
-        </div>
-        </div>
-        <div class="modal-footer">
+        <div v-show="bLogin" class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Login</button>
+          <button type="button" class="btn btn-primary" @click="handleLog()">Login</button>
         </div>
+        <div v-show="!bLogin" class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" @click="handleReg()">Register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="toast-container position-fixed top-0 start-50 translate-middle-x">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong class="me-auto">{{ toastMsg.title }}</strong>
+        <small>{{ toastMsg.small }}</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        {{ toastMsg.text }}
       </div>
     </div>
   </div>
@@ -81,6 +105,9 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <script>
+import axios from 'axios';
+import { Toast } from 'bootstrap';
+
 let storedTheme = localStorage.getItem('theme')
 
 const getPreferredTheme = () => {
@@ -106,6 +133,77 @@ const setTheme = function (theme) {
 
 setTheme(getPreferredTheme())
 
+export default {
+  data() {
+    return {
+      bLogin: true,
+      submitForm: {
+        usr: "",
+        psw: "",
+        twofa: "",
+        token: ""
+      },
+      toastMsg: {
+        text: 'message',
+        title: 'title',
+        small: 'small'
+      }
+    }
+  },
+  methods: {
+    initPage() {
+      this.submitForm.token = localStorage.getItem('jwt');
+    },
+    switchLogin(loginType) {
+      this.bLogin = loginType
+    },
+    showToast(toastMessage) {
+      this.toastMsg = toastMessage;
+      const toastLive = document.getElementById('liveToast');
+      const toastBootstrap = Toast.getOrCreateInstance(toastLive);
+      toastBootstrap.show();
+    },
+    async handleReg() {
+      try {
+        await axios.post(this.$server + '/api/register', this.submitForm);
+        this.showToast({
+          text: 'Registration Successful.',
+          title: 'Info',
+          small: 'Just Now'
+        })
+      }
+      catch (error) {
+        this.showToast({
+          text: error.response ? error.response.data.error : 'Registration failed',
+          title: 'Error',
+          small: 'Just Now'
+        })
+        // console.log(error)
+      }
+    },
+    async handleLog() {
+      try {
+        const res = await axios.post(this.$server + '/api/login', this.submitForm);
+        this.showToast({
+          text: 'Login Successful.',
+          title: 'Info',
+          small: 'Just Now'
+        });
+        this.submitForm.token = res.data.jwt;
+        localStorage.setItem('jwt', res.data.jwt);
+      }
+      catch (error) {
+        this.showToast({
+          text: error.response ? error.response.data.error : 'Login failed',
+          title: 'Error',
+          small: 'Just Now'
+        })
+        // console.log(error)
+      }
+    }
+  }
+}
+
 
 
 </script>
@@ -124,5 +222,14 @@ nav {
 
 .nav-link {
   cursor: pointer;
+}
+
+.clickText {
+  color: var(--bs-primary);
+  cursor: pointer;
+}
+
+.clickText:hover {
+  opacity: 0.5;
 }
 </style>

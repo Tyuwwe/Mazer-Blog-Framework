@@ -10,7 +10,6 @@ import Prism from "prismjs"
             <div class="topImg">
                 <HomeArticleMainTop :sourceData="sourceData" />
             </div>       
-            <div v-katex:display="'f(G(\\cdot)) = \\frac{1}{2}\\sum_{i=0}^{n}(y_i - \\omega_i)^2 = ||y_i||^2 + ||\\omega_i||^2 - 2y_i^T\\omega_i'"></div>     
             <div v-html="articleMain.text" class="main-text"></div>
         </div>
     </div>
