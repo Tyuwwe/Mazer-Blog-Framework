@@ -3,7 +3,8 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     usr VARCHAR(50) UNIQUE NOT NULL,
     psw TEXT NOT NULL,
-    usr_role INT NOT NULL
+    usr_role INT NOT NULL,
+	avt VARCHAR(20) DEFAULT '/static/image/default.png'
 );
 
 /* System Log */
