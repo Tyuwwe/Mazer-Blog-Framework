@@ -3,6 +3,9 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_refresh_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 from config import Config
 from datetime import datetime, timedelta
 from exts import jwt
@@ -40,9 +43,13 @@ class Users(db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
-    usr = db.Column(db.String(50), unique=True, nullable=False)
+    usr = db.Column(db.String(50), unique=True)
+    email = db.Column(db.String(50), unique=True, nullable=False)
     psw = db.Column(db.Text, nullable=False)
     usr_role = db.Column(db.Integer, nullable=False)
+    usr_desc = db.Column(db.Text, nullable=False)
+    avt = db.Column(db.String(200))
+    
 
 class Syslog(db.Model):
     __tablename__ = 'syslog'
@@ -112,10 +119,13 @@ def new_article():
 def register():
     data = request.get_json()
     username = data['usr']
+    email = data['email']
     password = data['psw']
+    avt = "/static/image/default.jpg"
+    print(data)
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     
-    newUser = Users(usr=username, psw=hashed_password, usr_role=1)
+    newUser = Users(usr=username, email=email, psw=hashed_password, usr_role=1, avt=avt)
     
     try:
         db.session.add(newUser)
@@ -129,17 +139,36 @@ def register():
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
-    username = data['usr']
+    email = data['email']
     password = data['psw']
     
-    user = Users.query.filter_by(usr=username).first()
+    user = Users.query.filter_by(email=email).first()
     
     if user and bcrypt.check_password_hash(user.psw, password):
-        access_token = create_access_token(identity=username)
-        return jsonify({'message': 'Login Successful!', 'jwt': access_token}), 201
+        access_token = create_access_token(identity=email)
+        refresh_token = create_refresh_token(identity=email)
+        return jsonify({'message': 'Login Successful!', 'jwt': access_token, 'jwt_ref': refresh_token}), 201
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
 
+# Get User Info
+@app.route('/api/users', methods=['GET'])
+@jwt_required()
+def getSingleUser(): 
+    email = get_jwt_identity()
+    user = Users.query.filter_by(email=email).first()
+    if user:
+        return jsonify({'usr': user.usr, 'email': user.email, 'usr_desc': user.usr_desc, 'avt': user.avt}), 201
+    else:
+        return jsonify({'error': 'Invalid request'}), 401
+
+# Token Test
+@app.route('/api/tokentest', methods=['GET'])
+@jwt_required()
+def getTokenStat():
+    email = get_jwt_identity()
+    return jsonify({'email': email})
+    
 if __name__ == '__main__':
     # generateHTML(filePath + '/static/markdown')
     app.run(debug=True)

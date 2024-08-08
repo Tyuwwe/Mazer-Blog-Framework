@@ -2,9 +2,11 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     usr VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
     psw TEXT NOT NULL,
     usr_role INT NOT NULL,
-	avt VARCHAR(20) DEFAULT '/static/image/default.png'
+    usr_desc TEXT,
+	avt VARCHAR(200) DEFAULT '/static/image/default.png'
 );
 
 /* System Log */

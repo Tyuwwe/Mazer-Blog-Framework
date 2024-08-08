@@ -22,20 +22,32 @@ import { RouterLink, RouterView } from 'vue-router'
           <li class="nav-item">
             <a class="nav-link" href="#">All Articles</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" @click="setTheme(getSwitchTheme())"><i class="bi bi-brightness-high-fill"></i></a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false"><i class="bi bi-globe"></i></a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-cn"></span> 中文(简体)</a></li>
-              <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-us"></span> English(US)</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-              data-bs-target="#loginModel">Login</button>
+          <li class="nav-item nav-flex">
+            <li class="nav-item">
+              <a class="nav-link" @click="setTheme(getSwitchTheme())"><i id="themeIco" class="bi bi-brightness-high-fill"></i></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="bi bi-translate"></i></a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-cn"></span> 中文(简体)</a></li>
+                <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-us"></span> English(US)</a></li>
+              </ul>
+            </li>
+            <li v-if="bNotHaveToken" class="nav-item">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#loginModel">Login</button>
+            </li>
+            <li v-else class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="bi bi-person-circle"></i></a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" @click="enterView('profile')"><i class="bi bi-person-square"></i> My
+                    Profile</a></li>
+                <li><a class="dropdown-item dropdown-danger" @click="logout()"><i class="bi bi-x-circle-fill"></i> Log
+                    Out</a></li>
+              </ul>
+            </li>
           </li>
         </ul>
         <form class="d-flex" role="search">
@@ -58,16 +70,23 @@ import { RouterLink, RouterView } from 'vue-router'
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div v-show="!bLogin" class="form-floating mb-3">
+            <input v-model="submitForm.usr" type="text" class="form-control" id="floatingUsr" placeholder="Username">
+            <label for="floatingUsr">Username</label>
+          </div>
           <div class="form-floating mb-3">
-            <input v-model="submitForm.usr" type="email" class="form-control" id="floatingInput" placeholder="Email address">
+            <input v-model="submitForm.email" type="email" class="form-control" id="floatingInput"
+              placeholder="Email address">
             <label for="floatingInput">Email address</label>
           </div>
           <div class="form-floating mb-3">
-            <input v-model="submitForm.psw" type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <input v-model="submitForm.psw" type="password" class="form-control" id="floatingPassword"
+              placeholder="Password">
             <label for="floatingPassword">Password</label>
           </div>
           <div v-show="bLogin" class="form-floating">
-            <input v-model="submitForm.twofa" type="password" class="form-control" id="floating2FA" placeholder="2FA Passcode" disabled>
+            <input v-model="submitForm.twofa" type="password" class="form-control" id="floating2FA"
+              placeholder="2FA Passcode" disabled>
             <label for="floating2FA">2FA Passcode</label>
           </div>
           <div v-show="bLogin" class="form-text">No account? <span class="clickText"
@@ -76,7 +95,7 @@ import { RouterLink, RouterView } from 'vue-router'
               @click="switchLogin(true)">Login</span> now.</div>
         </div>
         <div v-show="bLogin" class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button id="dismissModalBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary" @click="handleLog()">Login</button>
         </div>
         <div v-show="!bLogin" class="modal-footer">
@@ -86,7 +105,7 @@ import { RouterLink, RouterView } from 'vue-router'
       </div>
     </div>
   </div>
-  
+
   <div class="toast-container position-fixed top-0 start-50 translate-middle-x">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
@@ -128,17 +147,22 @@ const setTheme = function (theme) {
   document.documentElement.setAttribute('data-bs-theme', theme)
   storedTheme = theme
   localStorage.setItem('theme', storedTheme)
-  console.log(theme)
+  if (theme == 'dark') {
+    document.getElementById('themeIco').setAttribute('class', 'bi bi-brightness-high-fill')
+  }
+  else {
+    document.getElementById('themeIco').setAttribute('class', 'bi bi-moon-fill')
+  }
 }
-
-setTheme(getPreferredTheme())
 
 export default {
   data() {
     return {
       bLogin: true,
+      bNotHaveToken: true,
       submitForm: {
         usr: "",
+        email: "",
         psw: "",
         twofa: "",
         token: ""
@@ -162,6 +186,19 @@ export default {
       const toastLive = document.getElementById('liveToast');
       const toastBootstrap = Toast.getOrCreateInstance(toastLive);
       toastBootstrap.show();
+    },
+    enterView(vName) {
+      this.$router.push({ name: vName })
+    },
+    logout() {
+      localStorage.clear();
+      this.bLogin = true;
+      this.bNotHaveToken = true;
+      this.showToast({
+        text: "Log Out Successfully!",
+        title: "Info",
+        small: "Just Now"
+      })
     },
     async handleReg() {
       try {
@@ -191,6 +228,8 @@ export default {
         });
         this.submitForm.token = res.data.jwt;
         localStorage.setItem('jwt', res.data.jwt);
+        this.bNotHaveToken = false;
+        document.getElementById('dismissModalBtn').click();
       }
       catch (error) {
         this.showToast({
@@ -201,6 +240,15 @@ export default {
         // console.log(error)
       }
     }
+  },
+  mounted() {
+    if (localStorage.getItem('jwt')) {
+      this.bNotHaveToken = false;
+    }
+    else {
+      this.bNotHaveToken = true;
+    }
+    setTheme(getPreferredTheme())
   }
 }
 
@@ -231,5 +279,27 @@ nav {
 
 .clickText:hover {
   opacity: 0.5;
+}
+
+.dropdown-danger {
+  background-color: var(--bs-danger);
+  color: white;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+
+.dropdown-danger:hover {
+  background-color: #a82733;
+  color: white;
+}
+
+.nav-flex {
+  display: flex;
+}
+
+@media only screen and (max-width: 991px) {
+  .nav-flex .nav-item {
+    margin-right: 20px;
+  }
 }
 </style>

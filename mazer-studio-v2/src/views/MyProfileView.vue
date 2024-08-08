@@ -6,14 +6,14 @@ import CopyRight from '../components/CopyRight.vue'
     <div class="myProfile-container">
         <div class="myProfile-top">
             <div class="myAvatar">
-                <img class="myAvatar-img" src="/static/default-avatar.jpg" alt="Avatar">
+                <img class="myAvatar-img" :src="userData.avt" alt="Avatar">
             </div>
             <div class="myProfile">
                 <div class="myProfile-name">{{ userData.usr }}</div>
-                <div class="myProfile-desc">{{ userData.desc }}</div>
+                <div class="myProfile-desc">{{ userData.usr_desc }}</div>
             </div>
             <div class="myProfileBtns">
-                <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Edit</button>
+                <button type="button" class="btn btn-primary" @click="enterView('editor')"><i class="bi bi-pencil-square"></i> Edit</button>
             </div>
         </div>
         <div class="myProfile-bottom">
@@ -29,9 +29,21 @@ import CopyRight from '../components/CopyRight.vue'
                         </div>
                     </div>
                     <div class="article-btns">
-                        <button type="button" class="btn btn-primary"><i class="bi bi-eye-fill"></i></button>
-                        <button type="button" class="btn btn-secondary"><i class="bi bi-nut-fill"></i></button>
-                        <button type="button" class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
+                        <button type="button" class="btn btn-primary"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                data-bs-title="View Article">
+                                <i class="bi bi-eye-fill"></i>
+                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                data-bs-title="Edit Article">
+                                <i class="bi bi-nut-fill"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                data-bs-title="Delete Article">
+                                <i class="bi bi-trash3-fill"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -41,12 +53,18 @@ import CopyRight from '../components/CopyRight.vue'
 </template>
 
 <script>
+import axios from 'axios';
+import { Tooltip } from 'bootstrap';
+
 export default {
     data() {
         return {
+            jwt: '',
             userData: {
-                usr: "USERNAME",
-                desc: "NO USER DESCRIPTION"
+                usr: "",
+                usr_desc: "",
+                email: "",
+                avt: "/static/image/default.jpg",
             },
             articles: [
                 {
@@ -72,6 +90,29 @@ export default {
                 }
             ]
         }
+    },
+    methods: {
+        async fetchUserData() {
+            const response = await axios.get('http://localhost:5000/api/users', {
+                headers: {
+                    'Authorization': 'Bearer ' + this.jwt,
+                },
+            });
+            this.userData = response.data;
+        },
+        enterView(vName) {
+            this.$router.push({ name: vName })
+        },
+    },
+    mounted() {
+        this.jwt = localStorage.getItem('jwt')
+        const tooltipTriggers = document.getElementsByClassName('article-btns');
+        let tooltipTriggerList = []
+        for (let tooltip_element of tooltipTriggers) {
+            tooltipTriggerList.push(...(tooltip_element.childNodes))
+        }
+        [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl))
+        this.fetchUserData();
     }
 }
 </script>
@@ -153,12 +194,18 @@ export default {
     font-size: .75rem;
     display: flex;
     width: 100%;
-    padding: 10px;
+    padding: 20px;
     border-radius: 10px;
+    transition-duration: 0.1s;
+    margin-top: 10px;
+    box-shadow: var(--bs-tertiary-color) 0px 0px 5px 0px inset;
+    border: 1px solid transparent;
 }
 
 .myArticles-content:hover {
-    background-color: var(--bs-secondary-bg);
+    background-color: var(--bs-tertiary-bg);
+    box-shadow: transparent 0px 0px 0px 0px;
+    border: 1px solid transparent;
 }
 
 .myProfileBtns {
@@ -183,12 +230,22 @@ export default {
     display: flex;
 }
 
+.article-date, .article-likes {
+    width: 80px;
+    text-wrap: nowrap;
+}
+
+
 .article-date {
     margin-left: 5px;
 }
 
 .article-left {
     flex: 1;
+}
+
+.article-btns {
+    flex-shrink: 0;
 }
 
 .article-btns button {
