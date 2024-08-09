@@ -13,7 +13,7 @@ import CopyRight from '../components/CopyRight.vue'
                 <div class="myProfile-desc">{{ userData.usr_desc }}</div>
             </div>
             <div class="myProfileBtns">
-                <button type="button" class="btn btn-primary" @click="enterView('editor')"><i class="bi bi-pencil-square"></i> Edit</button>
+                <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Edit</button>
             </div>
         </div>
         <div class="myProfile-bottom">

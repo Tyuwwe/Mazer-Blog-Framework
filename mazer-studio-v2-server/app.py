@@ -20,8 +20,12 @@ db = SQLAlchemy(app)
 
 filePath = os.path.dirname(os.path.abspath(__file__))
 
-# Markdown Highlight Renderer
+ALLOWED_IMG_EXT = set(['png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF', 'webp', 'WEBP', 'avif', 'AVIF', 'jpeg', 'JPEG'])
+ 
+def allowed_img(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_IMG_EXT
 
+# Markdown Highlight Renderer
 class HighlightRenderer(mistune.HTMLRenderer):
     def block_code(self, code, info=None):
         if not info or info == "no-highlight":
@@ -167,8 +171,23 @@ def getSingleUser():
 @jwt_required()
 def getTokenStat():
     email = get_jwt_identity()
-    return jsonify({'email': email})
-    
+    return jsonify({'email': email}), 201
+
+# Upload Image
+@app.route('/api/uploadImage', methods=['POST'])
+@jwt_required()
+def uploadImage():
+    email = get_jwt_identity()
+    print(request)
+    img = request.files['file']
+    if allowed_img(img.filename):
+        newFilename = str(uuid.uuid4()) + '.' + img.filename.rsplit('.', 1)[1]
+        savePath = filePath + "/static/image/" + newFilename
+        img.save(savePath)
+        return jsonify({'message': 'Upload successful!', 'url': "/static/image/" + newFilename})
+    else:
+        return jsonify({'error': 'Invalid request'}), 401
+
 if __name__ == '__main__':
     # generateHTML(filePath + '/static/markdown')
     app.run(debug=True)

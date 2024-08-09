@@ -23,31 +23,34 @@ import { RouterLink, RouterView } from 'vue-router'
             <a class="nav-link" href="#">All Articles</a>
           </li>
           <li class="nav-item nav-flex">
-            <li class="nav-item">
-              <a class="nav-link" @click="setTheme(getSwitchTheme())"><i id="themeIco" class="bi bi-brightness-high-fill"></i></a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false"><i class="bi bi-translate"></i></a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-cn"></span> 中文(简体)</a></li>
-                <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-us"></span> English(US)</a></li>
-              </ul>
-            </li>
-            <li v-if="bNotHaveToken" class="nav-item">
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#loginModel">Login</button>
-            </li>
-            <li v-else class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false"><i class="bi bi-person-circle"></i></a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" @click="enterView('profile')"><i class="bi bi-person-square"></i> My
-                    Profile</a></li>
-                <li><a class="dropdown-item dropdown-danger" @click="logout()"><i class="bi bi-x-circle-fill"></i> Log
-                    Out</a></li>
-              </ul>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" @click="setTheme(getSwitchTheme())"><i id="themeIco"
+                class="bi bi-brightness-high-fill"></i></a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false"><i class="bi bi-translate"></i></a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-cn"></span> 中文(简体)</a></li>
+              <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-us"></span> English(US)</a></li>
+            </ul>
+          </li>
+          <li v-if="bNotHaveToken" class="nav-item">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+              data-bs-target="#loginModel">Login</button>
+          </li>
+          <li v-else class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false"><i class="bi bi-person-circle"></i></a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" @click="enterView('editor')"><i class="bi bi-pen-fill"></i> Write
+                  New Article</a></li>
+              <li><a class="dropdown-item" href="#" @click="enterView('profile')"><i class="bi bi-person-square"></i> My
+                  Profile</a></li>
+              <li><a class="dropdown-item dropdown-danger" @click="logout()"><i class="bi bi-x-circle-fill"></i> Log
+                  Out</a></li>
+            </ul>
+          </li>
           </li>
         </ul>
         <form class="d-flex" role="search">
@@ -106,7 +109,7 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
   </div>
 
-  <div class="toast-container position-fixed top-0 start-50 translate-middle-x">
+  <div class="toast-container position-fixed mt-3 top-0 start-50 translate-middle-x">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
         <i class="bi bi-info-circle me-2"></i>
@@ -116,6 +119,19 @@ import { RouterLink, RouterView } from 'vue-router'
       </div>
       <div class="toast-body">
         {{ toastMsg.text }}
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed mb-3 bottom-0 start-50 translate-middle-x">
+    <div id="liveToastLocalStorage" class="toast align-items-center text-bg-primary border-0" role="alert"
+      aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="width: 100%;">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{ lsMsg }}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"
+          @click="checkedLS()"></button>
       </div>
     </div>
   </div>
@@ -158,6 +174,7 @@ const setTheme = function (theme) {
 export default {
   data() {
     return {
+      lang: "",
       bLogin: true,
       bNotHaveToken: true,
       submitForm: {
@@ -171,7 +188,8 @@ export default {
         text: 'message',
         title: 'title',
         small: 'small'
-      }
+      },
+      lsMsg: 'Welcome! This website uses a small file, called \"LocalStorage\" to store some data. If you continue browsing, you will be deemed to agree to the use of LocalStorage.'
     }
   },
   methods: {
@@ -187,8 +205,16 @@ export default {
       const toastBootstrap = Toast.getOrCreateInstance(toastLive);
       toastBootstrap.show();
     },
+    showToastLS() {
+      const toastLive = document.getElementById('liveToastLocalStorage');
+      const toastBootstrap = Toast.getOrCreateInstance(toastLive);
+      toastBootstrap.show();
+    },
     enterView(vName) {
       this.$router.push({ name: vName })
+    },
+    checkedLS() {
+      localStorage.setItem('checkedLS', 'true');
     },
     logout() {
       localStorage.clear();
@@ -222,7 +248,7 @@ export default {
       try {
         const res = await axios.get(this.$server + '/api/tokentest', {
           headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
+            'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
           },
         })
       }
@@ -256,6 +282,10 @@ export default {
         })
         // console.log(error)
       }
+    },
+    firstLaunch() {
+      localStorage.setItem('lang', 'zh');
+      this.lang = 'zh';
     }
   },
   mounted() {
@@ -264,6 +294,15 @@ export default {
     }
     else {
       this.bNotHaveToken = true;
+    }
+    if (localStorage.getItem('lang')) {
+      this.lang = localStorage.getItem('lang');
+    }
+    else {
+      this.firstLaunch();
+    }
+    if (!localStorage.getItem('checkedLS')) {
+      this.showToastLS()
     }
     setTheme(getPreferredTheme())
     this.testToken()
