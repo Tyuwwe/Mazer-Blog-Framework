@@ -218,6 +218,23 @@ export default {
         // console.log(error)
       }
     },
+    async testToken() {
+      try {
+        const res = await axios.get(this.$server + '/api/tokentest', {
+          headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
+          },
+        })
+      }
+      catch (error) {
+        this.showToast({
+          text: error.response ? error.response.data.error : 'Token expired, please re-login.',
+          title: 'Error',
+          small: 'Just Now'
+        })
+        setTimeout(this.logout(), 2000)
+      }
+    },
     async handleLog() {
       try {
         const res = await axios.post(this.$server + '/api/login', this.submitForm);
@@ -249,6 +266,7 @@ export default {
       this.bNotHaveToken = true;
     }
     setTheme(getPreferredTheme())
+    this.testToken()
   }
 }
 

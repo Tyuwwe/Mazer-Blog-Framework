@@ -26,21 +26,52 @@ export default {
 
 <style>
 .editor-container {
-    max-width: 1200px;
-    min-width: 400px;
-    width: 75%;
-    margin: auto;
+    width: 100%;
     margin-top: 100px;
     margin-bottom: 100px;
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+.editor-container .v-md-editor {
+    max-width: 1200px;
+    min-width: 400px;
+    width: 100%;
+}
+
+/* V-Markdown-Editor Theme Override */
 .v-md-editor, .v-md-textarea-editor {
     background-color: var(--bs-body-bg) !important;
     color: var(--bs-primary-text) !important;
 }
 
-.vuepress-markdown-body {
+.vuepress-markdown-body, .v-md-editor__toolbar-item {
     background-color: var(--bs-body-bg) !important;
     color: var(--bs-primary-text) !important;
+}
+
+.v-md-textarea-editor textarea {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-primary-text) !important;
+}
+
+.v-md-editor__toolbar-item:hover {
+    background-color: var(--bs-secondary-bg) !important;
+}
+
+.v-md-editor__toolbar-item--active, .v-md-editor__toolbar-item--active:hover {
+  background-color: var(--bs-secondary-bg) !important;
+}
+
+.v-md-editor__left-area-title, .v-md-editor__toc-nav-item {
+  color: var(--bs-primary-text) !important;
+}
+
+.v-md-editor--fullscreen {
+  top: 80px !important;
+  max-width: 100vw !important;
 }
 </style>
