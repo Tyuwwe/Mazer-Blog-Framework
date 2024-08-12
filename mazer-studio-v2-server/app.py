@@ -73,9 +73,10 @@ class Pages(db.Model):
 class Articles(db.Model):
     __tablename__ = 'articles'
     
-    art_id = db.Column(db.Integer, primary_key=True)
+    auid = db.Column(db.String(40), primary_key=True)
     md_url = db.Column(db.String(100), unique=True, nullable=False)
     ht_url = db.Column(db.String(100), unique=True)
+    author_email = db.Column(db.String(50), unique=True, nullable=False)
 
 def convertHTML(mdText):
     markdown = mistune.create_markdown(renderer=HighlightRenderer(), plugins=['math', 'table'])
@@ -178,7 +179,6 @@ def getTokenStat():
 @jwt_required()
 def uploadImage():
     email = get_jwt_identity()
-    print(request)
     img = request.files['file']
     if allowed_img(img.filename):
         newFilename = str(uuid.uuid4()) + '.' + img.filename.rsplit('.', 1)[1]
@@ -187,6 +187,42 @@ def uploadImage():
         return jsonify({'message': 'Upload successful!', 'url': "/static/image/" + newFilename})
     else:
         return jsonify({'error': 'Invalid request'}), 401
+
+# Get Random UUID
+@app.route('/api/getUUID', methods=['GET'])
+def getUUID():
+    return jsonify({'message': 'Get successful!', 'uuid': uuid.uuid4()})
+
+# Save Article
+@app.route('/api/saveMD', methods=['POST'])
+@jwt_required()
+def saveMD():
+    email = get_jwt_identity()
+    data = request.get_json()
+    md = data['md']
+    auid = data['auid']
+    
+    art = Articles.query.filter_by(auid=auid).first()
+    # Exist MD
+    if art:
+        with open(filePath + art.md_url, 'w', encoding='utf-8') as file:
+            file.write(md)
+    else:
+        savePath = '/static/markdown/' + auid + '.md'
+        with open(filePath + savePath, 'w', encoding='utf-8') as file:
+            file.write(md)
+        print(auid)
+        print(email)
+        print(savePath)
+        newArticle = Articles(auid=auid, author_email=email, md_url=savePath)
+        try:
+            db.session.add(newArticle)
+            db.session.commit()
+            return jsonify({'message': 'Save Successful!'}), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': 'Save Failed.'}), 400
+
 
 if __name__ == '__main__':
     # generateHTML(filePath + '/static/markdown')

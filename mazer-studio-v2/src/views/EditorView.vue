@@ -1,6 +1,6 @@
 <script setup>
 import CopyRight from '../components/CopyRight.vue'
-import VueMarkdownEditor from '@kangc/v-md-editor';
+import VueMarkdownEditor, { values } from '@kangc/v-md-editor';
 import createKatexPlugin from '@kangc/v-md-editor/lib/plugins/katex/npm';
 import enUS from '@kangc/v-md-editor/lib/lang/en-US';
 
@@ -15,7 +15,8 @@ VueMarkdownEditor.lang.use('en-US', enUS);
       default-fullscreen=true
       default-show-toc=true
       :disabled-menus="[]" 
-      @upload-image="handleUploadImage" />
+      @upload-image="handleUploadImage"
+      @save="saveArticle" />
   </div>
   <CopyRight />
 </template>
@@ -27,6 +28,7 @@ export default {
   data() {
     return {
       text: '',
+      articleUID: ''
     };
   },
   methods: {
@@ -41,16 +43,42 @@ export default {
       return res;
     },
     async handleUploadImage(event, insertImage, file) {
-      console.log(file)
       let res_img = await this.uploadImageReq(file);
-      console.log(res_img)
 
       insertImage({
         url: this.$server + res_img.data.url,
         desc: file[0].name
       });
     },
+    async saveArticle(text, html) {
+      let postData = {
+        md: text,
+        auid: this.articleUID
+      }
+      let res = axios.post(this.$server + "/api/saveMD", postData, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+        }
+      })
+      console.log(res)
+    },
+    async getArticleUID() {
+      try {
+        let res = axios.get(this.$server + '/api/getUUID')
+        res.then((value) => {
+          this.articleUID = value.data.uuid
+          console.log(this.articleUID)
+        })
+      }
+      catch (error) {
+        console.log(error)
+        this.text = "Get Article Unique ID Failed, Please Refresh Page (F5).\n获取文章UID失败，请刷新页面。"
+      }
+    }
   },
+  mounted() {
+    this.getArticleUID();
+  }
 };
 </script>
 

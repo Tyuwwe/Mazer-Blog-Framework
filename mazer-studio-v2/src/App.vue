@@ -258,7 +258,7 @@ export default {
           title: 'Error',
           small: 'Just Now'
         })
-        setTimeout(this.logout(), 2000)
+        setTimeout('this.logout()', 2000)
       }
     },
     async handleLog() {
@@ -305,7 +305,9 @@ export default {
       this.showToastLS()
     }
     setTheme(getPreferredTheme())
-    this.testToken()
+    setInterval(() => {
+      this.testToken()
+    }, 60000)
   }
 }
 
