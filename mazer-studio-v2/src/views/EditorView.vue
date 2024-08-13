@@ -10,11 +10,12 @@ VueMarkdownEditor.lang.use('en-US', enUS);
 <template>
   <div class="editor-container">
     <v-md-editor v-model="text" height="600px"
-      left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save"
+      left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save commitToolbar"
       right-toolbar="preview toc sync-scroll"
       default-fullscreen=true
       default-show-toc=true
       :disabled-menus="[]" 
+      :toolbar="toolbar"
       @upload-image="handleUploadImage"
       @save="saveArticle" />
   </div>
@@ -24,11 +25,31 @@ VueMarkdownEditor.lang.use('en-US', enUS);
 <script>
 import axios from 'axios';
 
+let auid = ''
+let server = ''
+
 export default {
   data() {
     return {
       text: '',
-      articleUID: ''
+      articleUID: '',
+      toolbar: {
+        commitToolbar: {
+          icon: 'bi bi-upload',
+          title: 'Publish',
+          action(editor) {
+            let postData = {
+              raw_md: (JSON.parse(JSON.stringify(editor))).text,
+              auid: auid
+            }
+            let res = axios.post(server + "/api/publish", postData, {
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+              }
+            })
+          }
+        }
+      }
     };
   },
   methods: {
@@ -60,14 +81,14 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('jwt')
         }
       })
-      console.log(res)
     },
     async getArticleUID() {
       try {
         let res = axios.get(this.$server + '/api/getUUID')
         res.then((value) => {
           this.articleUID = value.data.uuid
-          console.log(this.articleUID)
+          auid = value.data.uuid
+          //console.log(this.articleUID)
         })
       }
       catch (error) {
@@ -77,6 +98,7 @@ export default {
     }
   },
   mounted() {
+    server = this.$server
     this.getArticleUID();
   }
 };

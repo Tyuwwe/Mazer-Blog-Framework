@@ -29,5 +29,5 @@ CREATE TABLE articles (
     auid VARCHAR(100) PRIMARY KEY,
     md_url VARCHAR(100) UNIQUE NOT NULL,
     ht_url VARCHAR(100) UNIQUE,
-    author_email VARCHAR(50) UNIQUE NOT NULL
+    author_email VARCHAR(50) NOT NULL
 );

@@ -94,6 +94,14 @@ def generateHTML(folderPath):
                 # base64 encrypt
                 # w.write(base64.b64encode(content.encode("utf-8")).decode("utf-8"))
 
+def generateHTMLbyFile(file):
+    with open(filePath + file, 'r', encoding='utf-8') as f:
+        content = convertHTML(f.read())
+        fileName = str(uuid.uuid4()) + '.mbf'
+        with open(filePath + '/static/article/' + fileName, 'w', encoding='utf-8') as w:
+            w.write(content)
+        return '/static/article/' + fileName
+
 @app.route('/test/<int:test_id>', methods=['GET'])
 def test(test_id):
     fileAddr = filePath + '\example\\1.md'
@@ -211,9 +219,6 @@ def saveMD():
         savePath = '/static/markdown/' + auid + '.md'
         with open(filePath + savePath, 'w', encoding='utf-8') as file:
             file.write(md)
-        print(auid)
-        print(email)
-        print(savePath)
         newArticle = Articles(auid=auid, author_email=email, md_url=savePath)
         try:
             db.session.add(newArticle)
@@ -223,6 +228,44 @@ def saveMD():
             db.session.rollback()
             return jsonify({'error': 'Save Failed.'}), 400
 
+# Publish Article
+@app.route('/api/publish', methods=['POST'])
+@jwt_required()
+def publishArt():
+    email = get_jwt_identity()
+    data = request.get_json()
+    md = data['raw_md']
+    auid = data['auid']
+    
+    art = Articles.query.filter_by(auid=auid).first()
+    # Exist MD
+    if art:
+        with open(filePath + art.md_url, 'w', encoding='utf-8') as file:
+            file.write(md)
+        genHTML = generateHTMLbyFile(art.md_url)
+        if os.path.exists(filePath.replace('\\', '/') + art.ht_url):
+            os.remove(filePath.replace('\\', '/') + art.ht_url)
+        art.ht_url = genHTML
+        try:
+            db.session.commit()
+            return jsonify({'message': 'Published Successful!'}), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': 'Publish Failed.'}), 400
+    else:
+        savePath = '/static/markdown/' + auid + '.md'
+        with open(filePath + savePath, 'w', encoding='utf-8') as file:
+            
+            file.write(md)
+        genHTML = generateHTMLbyFile(savePath)
+        newArticle = Articles(auid=auid, author_email=email, md_url=savePath, ht_url=genHTML)
+        try:
+            db.session.add(newArticle)
+            db.session.commit()
+            return jsonify({'message': 'Published Successful!'}), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': 'Publish Failed.'}), 400
 
 if __name__ == '__main__':
     # generateHTML(filePath + '/static/markdown')
