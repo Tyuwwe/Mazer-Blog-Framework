@@ -52,7 +52,7 @@ class Users(db.Model):
     psw = db.Column(db.Text, nullable=False)
     usr_role = db.Column(db.Integer, nullable=False)
     usr_desc = db.Column(db.Text, nullable=False)
-    avt = db.Column(db.String(200))
+    avt = db.Column(db.String(200), default='/static/image/default.jpg')
     
 
 class Syslog(db.Model):
@@ -69,14 +69,32 @@ class Pages(db.Model):
     pgs_id = db.Column(db.Integer, primary_key=True)
     md_url = db.Column(db.String(100), unique=True, nullable=False)
     ht_url = db.Column(db.String(100), unique=True)
+    author_email = db.Column(db.String(50), unique=True, nullable=False)
 
 class Articles(db.Model):
     __tablename__ = 'articles'
     
     auid = db.Column(db.String(40), primary_key=True)
-    md_url = db.Column(db.String(100), unique=True, nullable=False)
+    md_url = db.Column(db.String(100), unique=True)
     ht_url = db.Column(db.String(100), unique=True)
     author_email = db.Column(db.String(50), unique=True, nullable=False)
+    title = db.Column(db.String(100))
+    cover_url = db.Column(db.String(100), default='/static/image/default_cover.jpg')
+    tags = db.Column(db.String(200))
+    lang = db.Column(db.String(8))
+    likes = db.Column(db.Integer, default=0)
+    
+    def serialize(self):
+        return {
+            'auid': self.auid,
+            'md_url': self.md_url,
+            'ht_url': self.ht_url,
+            'author_email': self.author_email,
+            'cover_url': self.cover_url,
+            'tags': self.tags,
+            'lang': self.lang,
+            'likes': self.likes
+        }
 
 def convertHTML(mdText):
     markdown = mistune.create_markdown(renderer=HighlightRenderer(), plugins=['math', 'table'])
@@ -199,8 +217,27 @@ def uploadImage():
 # Get Random UUID
 @app.route('/api/getUUID', methods=['GET'])
 def getUUID():
-    return jsonify({'message': 'Get successful!', 'uuid': uuid.uuid4()})
+    return jsonify({'message': 'Get successful!', 'uuid': uuid.uuid4()}), 201
 
+# Get Articles
+@app.route('/api/articles', methods=['POST'])
+def getArticles():
+    data = request.get_json()
+    lang = data['lang']
+    tag = data['tag']
+    
+    arts = Articles.query.filter_by(lang=lang)
+    arts_list = [art.serialize() for art in arts]
+    return jsonify({'message': 'Get successful!', 'arts': arts_list}), 201
+
+@app.route('/api/article', methods=['GET'])
+def getArticle():
+    data = request.get_json()
+    auid = data['auid']
+    
+    art = Articles.query.filter_by(auid=auid).first()
+    return jsonify({'message': 'Get successful!', 'art': art}), 201
+    
 # Save Article
 @app.route('/api/saveMD', methods=['POST'])
 @jwt_required()
@@ -212,9 +249,18 @@ def saveMD():
     
     art = Articles.query.filter_by(auid=auid).first()
     # Exist MD
+    if art and not art.md_url:
+        savePath = '/static/markdown/' + auid + '.md'
+        art.md_url = savePath
+        db.session.commit()
     if art:
-        with open(filePath + art.md_url, 'w', encoding='utf-8') as file:
-            file.write(md)
+        try:
+            with open(filePath + art.md_url, 'w', encoding='utf-8') as file:
+                file.write(md)
+            return jsonify({'message': 'Save Successful!'}), 201
+        except Exception as e:
+            return jsonify({'error': 'Save Failed.'}), 400
+            
     else:
         savePath = '/static/markdown/' + auid + '.md'
         with open(filePath + savePath, 'w', encoding='utf-8') as file:
@@ -228,6 +274,37 @@ def saveMD():
             db.session.rollback()
             return jsonify({'error': 'Save Failed.'}), 400
 
+# Save Article Metadata
+@app.route('/api/savemeta', methods=['POST'])
+@jwt_required()
+def saveMeta():
+    email = get_jwt_identity()
+    data = request.get_json()
+    auid = data['auid']
+    title = data['title']
+    cover_url = data['cover_url']
+    tags = data['tags']
+    lang = data['lang']
+    
+    art = Articles.query.filter_by(auid=auid).first()
+    if art and art.author_email != email:
+        return jsonify({'error': 'Save Failed. User not match.'}), 400
+    if art:
+        art.title = title
+        art.cover_url = cover_url
+        art.tags = tags
+        art.lang = lang
+    else:
+        newArt = Articles(auid=auid, author_email=email, title=title, \
+            lang=lang, tags=tags, cover_url=cover_url)
+        db.session.add(newArt)
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Save Successful!'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Save Failed.'}), 400
+
 # Publish Article
 @app.route('/api/publish', methods=['POST'])
 @jwt_required()
@@ -239,11 +316,15 @@ def publishArt():
     
     art = Articles.query.filter_by(auid=auid).first()
     # Exist MD
+    if art and not art.md_url:
+        savePath = '/static/markdown/' + auid + '.md'
+        art.md_url = savePath
+        db.session.commit()
     if art:
         with open(filePath + art.md_url, 'w', encoding='utf-8') as file:
             file.write(md)
         genHTML = generateHTMLbyFile(art.md_url)
-        if os.path.exists(filePath.replace('\\', '/') + art.ht_url):
+        if art.ht_url and os.path.exists(filePath.replace('\\', '/') + art.ht_url):
             os.remove(filePath.replace('\\', '/') + art.ht_url)
         art.ht_url = genHTML
         try:

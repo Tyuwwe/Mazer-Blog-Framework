@@ -155,7 +155,7 @@ const getPreferredTheme = () => {
 storedTheme = getPreferredTheme()
 
 const getSwitchTheme = () => {
-  console.log(storedTheme)
+  // console.log(storedTheme)
   return storedTheme == 'light' ? 'dark' : 'light'
 }
 
@@ -305,6 +305,7 @@ export default {
       this.showToastLS()
     }
     setTheme(getPreferredTheme())
+    this.testToken()
     setInterval(() => {
       this.testToken()
     }, 60000)
