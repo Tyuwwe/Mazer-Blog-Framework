@@ -125,11 +125,12 @@ def generateHTMLbyFile(file):
             w.write(content)
         return '/static/article/' + fileName
 
+# Test Only
 @app.route('/test/<int:test_id>', methods=['GET'])
 def test(test_id):
-    fileAddr = filePath + '\example\\1.md'
+    fileAddr = filePath + '/example/1.md'
     if test_id == 2 :
-        fileAddr = filePath + '\example\example.md'
+        fileAddr = filePath + '/example/example.md'
     with open(fileAddr, 'r', encoding='utf-8') as file:
         mdText = file.read()
         markdown = mistune.create_markdown(renderer=HighlightRenderer(), plugins=['math', 'table'])
@@ -258,7 +259,7 @@ def getArticle(auid):
             with open(filePath + art.ht_url, 'r', encoding='utf-8') as file:
                 retInfo['art_html'] = file.read()
                 
-        return jsonify({'message': 'Get successful!', 'ret': retInfo}), 201
+        return jsonify({'message': 'Get successful!', 'data': retInfo}), 201
     else:
         return jsonify({'message': 'Unable to find article.'}), 404
     

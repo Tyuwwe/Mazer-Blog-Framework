@@ -36,7 +36,7 @@ import CopyRight from '../components/CopyRight.vue'
                         </button>
                         <button type="button" class="btn btn-secondary"
                                 data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Edit Article" @click="editArticle(String(article.auid))">
+                                data-bs-title="Edit Article" @click="editArticle(article.auid)">
                                 <i class="bi bi-nut-fill"></i>
                         </button>
                         <button type="button" class="btn btn-danger"
@@ -70,8 +70,9 @@ export default {
         }
     },
     methods: {
-        editArticle(qData) {
-            this.$router.push({name: "editor", query: qData})
+        editArticle(pData) {
+            localStorage.setItem("editingArt", pData)
+            this.$router.push({name: "editor"})
         },
         initTooltips() {
             const tooltipTriggers = document.getElementsByClassName('article-btns');

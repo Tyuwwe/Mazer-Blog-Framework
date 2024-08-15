@@ -10,7 +10,7 @@ VueMarkdownEditor.lang.use('en-US', enUS);
 <template>
   <div class="editor-container">
     <v-md-editor v-model="text" height="600px"
-      left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save commitToolbar settingToolbar"
+      left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | openFileToolbar save commitToolbar settingToolbar"
       right-toolbar="preview toc sync-scroll"
       default-fullscreen=true
       default-show-toc=true
@@ -61,6 +61,7 @@ VueMarkdownEditor.lang.use('en-US', enUS);
 
   <button id="modalHideBtn" style="display: none;" type="button" data-bs-toggle="modal" data-bs-target="#createModel"></button>
   <input ref="file" id="coverIptHid" style="display: none;" type="file" @change="getFileData">
+  <input accept=".md" ref="mdFile" id="mdFileIptHid" style="display: none;" type="file" @change="getMarkdownLocal">
 
   <CopyRight />
 </template>
@@ -88,8 +89,15 @@ export default {
       },
       articleUID: '',
       toolbar: {
+        openFileToolbar: {
+          icon: 'bi bi-filetype-md',
+          title: 'Open Local Markdown',
+          action(editor) {
+            document.getElementById('mdFileIptHid').click()
+          }
+        },
         commitToolbar: {
-          icon: 'bi bi-upload',
+          icon: 'bi bi-send',
           title: 'Publish',
           action(editor) {
             console.log(toRaw(editor).text)
@@ -163,6 +171,20 @@ export default {
       }
       // console.log(this.submitForm.cover)
     },
+    getMarkdownLocal() {
+      if (this.$refs.mdFile.files[0]) {
+        let mdFile = this.$refs.mdFile.files[0]
+        let mdLocal = new FileReader()
+        let res = ""
+				mdLocal.onload = function(e) {
+					res = String(e.target.result);
+				};
+        mdLocal.readAsText(mdFile, "UTF-8")
+        setTimeout(() => {
+          this.text = res
+        }, 100)
+      }
+    },
     uploadCover() {
       document.getElementById('coverIptHid').click()
     },
@@ -218,21 +240,45 @@ export default {
           this.articleUID = value.data.uuid
           auid = value.data.uuid
           this.submitForm.auid = value.data.uuid
-          //console.log(this.articleUID)
+          console.log("Get new AUID")
         })
       }
       catch (error) {
         console.log(error)
         this.text = "Get Article Unique ID Failed, Please Refresh Page (F5).\n获取文章UID失败，请刷新页面。"
       }
+    },
+    async getArticle(local_auid) {
+      try {
+        let res = axios.get(this.$server + '/api/article/' + local_auid)
+        res.then((r) => {
+          let value = r.data
+          console.log(value)
+          if (value.data.art_md){
+            this.text = value.data.art_md;
+            this.submitForm.cover_url = value.data.art_meta.cover_url;
+            this.submitForm.tags = value.data.art_meta.tags;
+            this.submitForm.lang = value.data.art_meta.lang;
+            this.submitForm.title = value.data.art_meta.title;
+            this.submitForm.auid = local_auid;
+            auid = local_auid;
+          }
+        })
+      }
+      catch (error) {
+        console.log(error)
+        this.text = "Get Article Failed, Please Refresh Page (F5).\n获取文章失败，请刷新页面。"
+      }
     }
   },
   mounted() {
     server = this.$server
-    this.getArticleUID();
-    if (this.$route.query != {}) {
-      let a = this.$route.query
-      console.log(a)
+    let nowEditing = localStorage.getItem('editingArt')
+    if (nowEditing != 'none') {
+      this.getArticle(nowEditing)
+    }
+    else {
+      this.getArticleUID();
     }
   }
 };
