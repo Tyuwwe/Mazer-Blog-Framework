@@ -230,6 +230,10 @@ export default {
   mounted() {
     server = this.$server
     this.getArticleUID();
+    if (this.$route.query != {}) {
+      let a = this.$route.query
+      console.log(a)
+    }
   }
 };
 </script>

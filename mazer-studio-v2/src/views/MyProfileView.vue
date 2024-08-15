@@ -20,12 +20,12 @@ import CopyRight from '../components/CopyRight.vue'
             <div class="myArticles">
                 <div class="myArticles-title">My Articles</div>
                 <div v-if="!articles.length" class="myArticles-content">No Available Record</div>
-                <div v-for="article in articles" :key="article.id" class="myArticles-content">
+                <div v-for="article in articles" :key="article.auid" class="myArticles-content">
                     <div class="article-left">
                         <div class="article-title">{{ article.title }}</div>
                         <div class="article-info">
+                            <div class="article-date"><i class="bi bi-calendar-date-fill"></i> {{ article.publish_date.split('T')[0] }}</div>
                             <div class="article-likes"><i class="bi bi-suit-heart-fill"></i> {{ article.likes }}</div>
-                            <div class="article-date"><i class="bi bi-calendar-date-fill"></i> {{ article.date }}</div>
                         </div>
                     </div>
                     <div class="article-btns">
@@ -36,7 +36,7 @@ import CopyRight from '../components/CopyRight.vue'
                         </button>
                         <button type="button" class="btn btn-secondary"
                                 data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Edit Article">
+                                data-bs-title="Edit Article" @click="editArticle(String(article.auid))">
                                 <i class="bi bi-nut-fill"></i>
                         </button>
                         <button type="button" class="btn btn-danger"
@@ -66,39 +66,45 @@ export default {
                 email: "",
                 avt: "/static/image/default.jpg",
             },
-            articles: [
-                {
-                    id: 1,
-                    title: "How to get Nobel Prize 2025?",
-                    likes: 123,
-                    date: "2025/1/1",
-                    stat: 1
-                },
-                {
-                    id: 2,
-                    title: "How to write a Linux Kernel?",
-                    likes: 124133,
-                    date: "2025/12/31",
-                    stat: 1
-                },
-                {
-                    id: 3,
-                    title: "How to go to Mars with 1 dollar?",
-                    likes: 114514,
-                    date: "2022/12/31",
-                    stat: 0
-                }
-            ]
+            articles: []
         }
     },
     methods: {
+        editArticle(qData) {
+            this.$router.push({name: "editor", query: qData})
+        },
+        initTooltips() {
+            const tooltipTriggers = document.getElementsByClassName('article-btns');
+            let tooltipTriggerList = []
+            for (let tooltip_element of tooltipTriggers) {
+                tooltipTriggerList.push(...(tooltip_element.childNodes))
+            }
+            [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl, {trigger : 'hover'}));
+            [...tooltipTriggerList].forEach(element => {
+                element.addEventListener('click', () => {
+                    const elems = document.getElementsByClassName('tooltip')
+                    for (let ele of elems) {
+                        ele.remove()
+                    }
+                })
+            })
+        },
         async fetchUserData() {
-            const response = await axios.get('http://localhost:5000/api/users', {
+            const response = await axios.get(this.$server + '/api/users', {
                 headers: {
                     'Authorization': 'Bearer ' + this.jwt,
                 },
             });
             this.userData = response.data;
+            const response_art = await axios.get(this.$server + '/api/articles', {
+                headers: {
+                    'Authorization': 'Bearer ' + this.jwt,
+                },
+            });
+            this.articles = response_art.data.arts;
+            setTimeout(() => {
+                this.initTooltips()
+            }, 200)
         },
         enterView(vName) {
             this.$router.push({ name: vName })
@@ -106,12 +112,6 @@ export default {
     },
     mounted() {
         this.jwt = localStorage.getItem('jwt')
-        const tooltipTriggers = document.getElementsByClassName('article-btns');
-        let tooltipTriggerList = []
-        for (let tooltip_element of tooltipTriggers) {
-            tooltipTriggerList.push(...(tooltip_element.childNodes))
-        }
-        [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl))
         this.fetchUserData();
     }
 }
@@ -231,7 +231,7 @@ export default {
 }
 
 .article-date, .article-likes {
-    width: 80px;
+    width: 100px;
     text-wrap: nowrap;
 }
 

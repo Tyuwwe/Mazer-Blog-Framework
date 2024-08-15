@@ -271,6 +271,7 @@ export default {
         });
         this.submitForm.token = res.data.jwt;
         localStorage.setItem('jwt', res.data.jwt);
+        localStorage.setItem('email', res.data.email);
         this.bNotHaveToken = false;
         document.getElementById('dismissModalBtn').click();
       }

@@ -83,6 +83,8 @@ class Articles(db.Model):
     tags = db.Column(db.String(200))
     lang = db.Column(db.String(8))
     likes = db.Column(db.Integer, default=0)
+    update_date = db.Column(db.DateTime, default=datetime.utcnow)
+    publish_date = db.Column(db.DateTime, default=datetime.utcnow)
     
     def serialize(self):
         return {
@@ -90,10 +92,13 @@ class Articles(db.Model):
             'md_url': self.md_url,
             'ht_url': self.ht_url,
             'author_email': self.author_email,
+            'title': self.title,
             'cover_url': self.cover_url,
             'tags': self.tags,
             'lang': self.lang,
-            'likes': self.likes
+            'likes': self.likes,
+            'update_date': self.update_date.isoformat(),
+            'publish_date': self.publish_date.isoformat()
         }
 
 def convertHTML(mdText):
@@ -177,8 +182,7 @@ def login():
     
     if user and bcrypt.check_password_hash(user.psw, password):
         access_token = create_access_token(identity=email)
-        refresh_token = create_refresh_token(identity=email)
-        return jsonify({'message': 'Login Successful!', 'jwt': access_token, 'jwt_ref': refresh_token}), 201
+        return jsonify({'message': 'Login Successful!', 'jwt': access_token, 'email': email}), 201
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
 
@@ -220,23 +224,43 @@ def getUUID():
     return jsonify({'message': 'Get successful!', 'uuid': uuid.uuid4()}), 201
 
 # Get Articles
-@app.route('/api/articles', methods=['POST'])
-def getArticles():
-    data = request.get_json()
-    lang = data['lang']
-    tag = data['tag']
-    
+@app.route('/api/articles/<string:lang>', methods=['GET'])
+def getArticles(lang):    
     arts = Articles.query.filter_by(lang=lang)
     arts_list = [art.serialize() for art in arts]
     return jsonify({'message': 'Get successful!', 'arts': arts_list}), 201
 
-@app.route('/api/article', methods=['GET'])
-def getArticle():
-    data = request.get_json()
-    auid = data['auid']
-    
+# Get Articles by User
+@app.route('/api/articles', methods=['GET'])
+@jwt_required()
+def getArticlesbyUser():    
+    email = get_jwt_identity()
+    arts = Articles.query.filter_by(author_email=email)
+    arts_list = [art.serialize() for art in arts]
+    return jsonify({'message': 'Get successful!', 'arts': arts_list}), 201
+
+# Get Article
+@app.route('/api/article/<string:auid>', methods=['GET'])
+def getArticle(auid):
     art = Articles.query.filter_by(auid=auid).first()
-    return jsonify({'message': 'Get successful!', 'art': art}), 201
+    art_list = art.serialize()
+    retInfo = {
+        'art_meta': art_list,
+        'art_md': '',
+        'art_html': '',
+    }
+    if art:
+        if art.md_url:
+            with open(filePath + art.md_url, 'r', encoding='utf-8') as file:
+                retInfo['art_md'] = file.read()
+                
+        if art.ht_url:
+            with open(filePath + art.ht_url, 'r', encoding='utf-8') as file:
+                retInfo['art_html'] = file.read()
+                
+        return jsonify({'message': 'Get successful!', 'ret': retInfo}), 201
+    else:
+        return jsonify({'message': 'Unable to find article.'}), 404
     
 # Save Article
 @app.route('/api/saveMD', methods=['POST'])

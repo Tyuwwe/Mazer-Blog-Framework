@@ -35,5 +35,20 @@ CREATE TABLE articles (
     cover_url VARCHAR(100) DEFAULT '/static/image/default_cover.jpg',
     tags VARCHAR(200),
     lang VARCHAR(8),
-    likes INT DEFAULT 0
+    likes INT DEFAULT 0,
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    publish_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE OR REPLACE FUNCTION update_articles_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.update_date = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER articles_updated_at_trigger
+BEFORE UPDATE ON articles
+FOR EACH ROW
+EXECUTE FUNCTION update_articles_updated_at();
