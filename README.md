@@ -53,6 +53,9 @@ If you want to build on your own environment, you have to install [Node.js](http
 Its quite simple to build a Vue project:
 
 ```shell
+# Install necessary packages
+npm install
+
 # Run build in source/mazer-studio-v2
 npm run build
 ```
