@@ -4,12 +4,12 @@
 <template>
     <div class="article-container">
         <div class="article-background-image">
-            <img :src="sourceData.imgUrl" alt="bkgimg" class="article-bkg-img">
+            <img :src="serverUrl + sourceData.cover_url" alt="bkgimg" class="article-bkg-img">
         </div>
         <div class="article-text-container">
             <div class="article-title-text">
                 {{ sourceData.title }}
-                <div class="article-author-text"><i class="bi bi-person-circle"></i> {{ sourceData.author }} / {{ sourceData.date }}</div>
+                <div class="article-author-text"><i class="bi bi-person-circle"></i> {{ sourceData.author_email }} / {{ sourceData.publish_date.split('T')[0] }}</div>
             </div>
         </div>
         <div class="article-background-color"></div>
@@ -17,18 +17,24 @@
 </template>
 
 <script>
+
 export default {
     props: {
         sourceData: {
-            id: Number,
+            auid: String,
             title: String,
-            author: String,
-            date: String,
-            imgUrl: String,
+            author_email: String,
+            publish_date: String,
+            cover_url: String,
             tags: {
                 type: Object,
                 default: []
             }
+        }
+    },
+    data() {
+        return {
+            serverUrl: this.$server
         }
     }
 }

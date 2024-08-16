@@ -28,14 +28,19 @@ export default {
             articleMain: {
                 text: '<h3>Loading... Please Wait</h3>'
             },
-            sourceData: this.$route.query
+            auid: this.$route.query.auid,
+            sourceData: {
+                publish_date: ''
+            }
         }
     },
     methods: {
         async fetchText() {
             try {
-                const response = await axios.get('http://localhost:5000/test/' + this.sourceData.id);
-                this.articleMain.text = response.data.html;
+                const response = await axios.get(this.$server + '/api/article/' + this.$route.query.auid);
+                this.articleMain.text = response.data.data.art_html;
+                this.sourceData = response.data.data.art_meta
+                console.log(response)
                 setTimeout(() => {
                     Prism.highlightAll();
                     this.loadMath();

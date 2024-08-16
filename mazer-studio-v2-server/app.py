@@ -74,7 +74,7 @@ class Pages(db.Model):
 class Articles(db.Model):
     __tablename__ = 'articles'
     
-    auid = db.Column(db.String(40), primary_key=True)
+    auid = db.Column(db.String(40), primary_key=True, nullable=False)
     md_url = db.Column(db.String(100), unique=True)
     ht_url = db.Column(db.String(100), unique=True)
     author_email = db.Column(db.String(50), unique=True, nullable=False)
@@ -244,6 +244,8 @@ def getArticlesbyUser():
 @app.route('/api/article/<string:auid>', methods=['GET'])
 def getArticle(auid):
     art = Articles.query.filter_by(auid=auid).first()
+    if not art:
+        return jsonify({'message': 'Unable to find article.'}), 404
     art_list = art.serialize()
     retInfo = {
         'art_meta': art_list,

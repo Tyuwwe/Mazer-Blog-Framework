@@ -7,7 +7,7 @@ import CopyRight from '../components/CopyRight.vue'
 <template>
   <main>
     <ul class="HomeBody-ul">
-      <li class="HomeBody" v-for="sData in sourceDataList" :key="sData.id">
+      <li class="HomeBody" v-for="sData in sourceDataList" :key="sData.auid">
         <HomeArticleBox :sourceData="sData" @click="enterArticle(sData)" />
       </li>
     </ul>
@@ -16,33 +16,30 @@ import CopyRight from '../components/CopyRight.vue'
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      sourceDataList: [
-        {
-          id: "1",
-          title: "How to Install Windows 11",
-          author: "Tyuwwe",
-          date: "2024-7-26",
-          imgUrl: "/static/example-img.jpg"
-        },
-        {
-          id: "2",
-          title: "Markdown Support Test Page",
-          author: "Tyuwwe",
-          date: "2024-7-26",
-          imgUrl: "/static/wallhaven-x6yxpz.png"
-        }
-      ]
-
+      sourceDataList: {}
     }
   },
   methods: {
     enterArticle(sData) {
       window.scroll(0, 0);
-      this.$router.push({name: "article", query: sData})
-    }
+      this.$router.push({name: "article", query: {'auid': sData.auid}})
+    },
+    async fetchArticle() {
+      const res = axios.get(this.$server + '/api/articles/' + localStorage.getItem('lang'))
+      res.then((value) => {
+        console.log(value)
+        this.sourceDataList = value.data.arts
+        console.log(this.sourceDataList)
+      })
+    }  
+  },
+  mounted() {
+    this.fetchArticle()
   }
 }
 </script>

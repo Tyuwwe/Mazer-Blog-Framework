@@ -26,6 +26,7 @@ import CopyRight from '../components/CopyRight.vue'
                         <div class="article-info">
                             <div class="article-date"><i class="bi bi-calendar-date-fill"></i> {{ article.publish_date.split('T')[0] }}</div>
                             <div class="article-likes"><i class="bi bi-suit-heart-fill"></i> {{ article.likes }}</div>
+                            <div class="article-lang"><i class="bi bi-translate"></i> {{ article.lang }}</div>
                         </div>
                     </div>
                     <div class="article-btns">
@@ -231,9 +232,9 @@ export default {
     display: flex;
 }
 
-.article-date, .article-likes {
-    width: 100px;
+.article-date, .article-likes, .article-lang {
     text-wrap: nowrap;
+    padding-right: 10px;
 }
 
 

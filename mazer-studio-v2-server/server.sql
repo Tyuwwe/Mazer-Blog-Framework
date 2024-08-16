@@ -27,7 +27,7 @@ CREATE TABLE pages (
 
 /* Articles */
 CREATE TABLE articles (
-    auid VARCHAR(100) PRIMARY KEY,
+    auid VARCHAR(100) PRIMARY KEY NOT NULL,
     md_url VARCHAR(100) UNIQUE,
     ht_url VARCHAR(100) UNIQUE,
     author_email VARCHAR(50) NOT NULL,

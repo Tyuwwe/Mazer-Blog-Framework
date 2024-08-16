@@ -31,8 +31,8 @@ import { RouterLink, RouterView } from 'vue-router'
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
               aria-expanded="false"><i class="bi bi-translate"></i></a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-cn"></span> 中文(简体)</a></li>
-              <li><a class="dropdown-item" href="#"><span class="flag-icon flag-icon-us"></span> English(US)</a></li>
+              <li><a class="dropdown-item" @click="setLang('zh')" href="#"><span class="flag-icon flag-icon-cn"></span> 中文(简体)</a></li>
+              <li><a class="dropdown-item" @click="setLang('en')" href="#"><span class="flag-icon flag-icon-us"></span> English(US)</a></li>
             </ul>
           </li>
           <li v-if="bNotHaveToken" class="nav-item">
@@ -60,7 +60,6 @@ import { RouterLink, RouterView } from 'vue-router'
       </div>
     </div>
   </nav>
-
 
   <RouterView />
 
@@ -193,6 +192,10 @@ export default {
     }
   },
   methods: {
+    setLang(lang) {
+      localStorage.setItem('lang', lang)
+      location.reload()
+    },
     initPage() {
       this.submitForm.token = localStorage.getItem('jwt');
     },
@@ -212,6 +215,9 @@ export default {
     },
     enterView(vName) {
       this.$router.push({ name: vName })
+      if (vName = 'editor') {
+        localStorage.setItem('editingArt', 'none')
+      }
     },
     checkedLS() {
       localStorage.setItem('checkedLS', 'true');
@@ -258,7 +264,9 @@ export default {
           title: 'Error',
           small: 'Just Now'
         })
-        setTimeout('this.logout()', 2000)
+        setTimeout(() => {
+          this.logout()
+        }, 2000)
       }
     },
     async handleLog() {
@@ -292,6 +300,7 @@ export default {
   mounted() {
     if (localStorage.getItem('jwt')) {
       this.bNotHaveToken = false;
+      this.testToken()
     }
     else {
       this.bNotHaveToken = true;
@@ -306,7 +315,6 @@ export default {
       this.showToastLS()
     }
     setTheme(getPreferredTheme())
-    this.testToken()
     setInterval(() => {
       this.testToken()
     }, 60000)

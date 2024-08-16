@@ -240,7 +240,7 @@ export default {
           this.articleUID = value.data.uuid
           auid = value.data.uuid
           this.submitForm.auid = value.data.uuid
-          console.log("Get new AUID")
+          // console.log("Get new AUID")
         })
       }
       catch (error) {
