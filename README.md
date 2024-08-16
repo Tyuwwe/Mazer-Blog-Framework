@@ -1,10 +1,22 @@
+<div align="center"> 
+
 # Mazer-Blog-Framework
 
-The Mazer Blog Framework (MBF) is a Frontend + Backend All-in-one Framework.
+<img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="python">
+<img src="https://img.shields.io/badge/Node.js-v20+-rgb(67,141,64).svg" alt="node">
+<img src="https://img.shields.io/badge/Vue.js-v3-rgb(53,73,94).svg" alt="vue">
+<img src="https://img.shields.io/badge/PostgreSQL-16-rgb(51,103,145).svg" alt="postgre">
+<img src="https://img.shields.io/badge/Flask-v3-rgb(58,169,191).svg" alt="flask">
 
+<br>
+A All-in-one Blog Framework
+<br>
 Powered by Vue / Node.js / PostgreSQL / Flask
 
-You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-Framework/releases).
+You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-Framework/releases)
+
+
+</div>
 
 ## Installation
 
