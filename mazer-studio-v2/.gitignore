@@ -28,3 +28,8 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# Mazer Blog Framework Files
+mazer-studio-v2-server/static/article
+mazer-studio-v2-server/static/image
+mazer-studio-v2-server/static/markdown
