@@ -236,11 +236,6 @@ export default {
     padding-right: 10px;
 }
 
-
-.article-date {
-    margin-left: 5px;
-}
-
 .article-left {
     flex: 1;
 }

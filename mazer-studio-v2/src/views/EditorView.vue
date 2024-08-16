@@ -314,7 +314,8 @@ export default {
   color: var(--bs-primary-text) !important;
 }
 
-.v-md-textarea-editor textarea {
+.v-md-textarea-editor textarea,
+.vuepress-markdown-body tr:nth-child(2n) {
   background-color: var(--bs-body-bg) !important;
   color: var(--bs-primary-text) !important;
 }
