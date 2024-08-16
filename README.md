@@ -42,6 +42,10 @@ npm install --global serve
 serve
 ```
 
+### 5. Run Python Flask
+
+Enter folder & run `python ./app.py`, the server will connect PostgreSQL and print logs.
+
 ## Build
 
 If you want to build on your own environment, you have to install [Node.js](https://nodejs.org/) first.
