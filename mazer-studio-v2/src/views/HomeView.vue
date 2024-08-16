@@ -10,6 +10,9 @@ import CopyRight from '../components/CopyRight.vue'
       <li class="HomeBody" v-for="sData in sourceDataList" :key="sData.auid">
         <HomeArticleBox :sourceData="sData" @click="enterArticle(sData)" />
       </li>
+      <li class="HomeBody" v-if="!sourceDataList.length">
+        <div class="Info">No Article Available Now</div>
+      </li>
     </ul>
     <CopyRight />
   </main>

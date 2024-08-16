@@ -273,9 +273,8 @@ export default {
   },
   mounted() {
     server = this.$server
-    let nowEditing = localStorage.getItem('editingArt')
-    if (nowEditing != 'none') {
-      this.getArticle(nowEditing)
+    if (this.$route.query.auid) {
+      this.getArticle(this.$route.query.auid)
     }
     else {
       this.getArticleUID();

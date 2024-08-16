@@ -72,8 +72,7 @@ export default {
     },
     methods: {
         editArticle(pData) {
-            localStorage.setItem("editingArt", pData)
-            this.$router.push({name: "editor"})
+            this.$router.push({name: "editor", query: {'auid': pData}})
         },
         initTooltips() {
             const tooltipTriggers = document.getElementsByClassName('article-btns');
