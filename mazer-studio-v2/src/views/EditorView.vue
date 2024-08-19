@@ -5,15 +5,17 @@ import createKatexPlugin from '@kangc/v-md-editor/lib/plugins/katex/npm';
 import enUS from '@kangc/v-md-editor/lib/lang/en-US';
 
 VueMarkdownEditor.use(createKatexPlugin());
-VueMarkdownEditor.lang.use('en-US', enUS);
+if (localStorage.getItem('lang') == 'en') {
+  VueMarkdownEditor.lang.use('en-US', enUS);
+}
 </script>
 <template>
   <div class="editor-container">
     <v-md-editor v-model="text" height="600px"
       left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | openFileToolbar save commitToolbar settingToolbar"
       right-toolbar="preview toc sync-scroll"
-      default-fullscreen=true
-      default-show-toc=true
+      :default-fullscreen=true
+      :default-show-toc=true
       :disabled-menus="[]" 
       :toolbar="toolbar"
       @upload-image="handleUploadImage"
@@ -24,36 +26,36 @@ VueMarkdownEditor.lang.use('en-US', enUS);
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5 text-reset">Write New Article</h1>
+          <h1 class="modal-title fs-5 text-reset">{{ $t('editor.modal_title') }}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="form-floating mb-3">
             <input v-model="submitForm.title" type="text" class="form-control" id="floatingTitle" placeholder="Title">
-            <label for="floatingTitle">Title</label>
+            <label for="floatingTitle">{{ $t('editor.modal_form_title') }}</label>
           </div>
           <div class="form-floating mb-3">
             <input v-model="submitForm.tags" type="text" class="form-control" id="floatingTags" placeholder="Article Tags">
-            <label for="floatingTags">Article Tags</label>
+            <label for="floatingTags">{{ $t('editor.modal_form_tags') }}</label>
           </div>
           <div class="form-floating mb-3">
             <select class="form-select" aria-label="selectLang" v-model="submitForm.lang" id="selectLangOptions">
               <option value="zh">中文 (简体)</option>
               <option value="en">English (US)</option>
             </select>
-            <label for="selectLangOptions">Article Language</label>
+            <label for="selectLangOptions">{{ $t('editor.modal_form_selectlang') }}</label>
           </div>
           <div class="input-group mb-3">
-            <button @click="uploadCover()" class="btn btn-outline-secondary" type="button" id="button-addon1">Upload</button>
+            <button @click="uploadCover()" class="btn btn-outline-secondary" type="button" id="button-addon1">{{ $t('editor.modal_form_upload') }}</button>
             <input id="coverIptVis" type="text" class="form-control" :placeholder="submitForm.cover_url" aria-label="Article Cover" aria-describedby="button-addon1" disabled>
           </div>
           <div class="form-floating">
             <input type="text" readonly class="form-control-plaintext" id="floatingPlaintextInput" :placeholder="submitForm.auid" :value="submitForm.auid">
-            <label for="floatingPlaintextInput">Article Unique Identification (Auto-Generated)</label>
+            <label for="floatingPlaintextInput">{{ $t('editor.modal_form_auid') }}</label>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" @click="submitMeta()">Submit</button>
+          <button type="submit" class="btn btn-primary" @click="submitMeta()">{{ $t('editor.modal_form_submit') }}</button>
         </div>
       </div>
     </div>
@@ -72,8 +74,7 @@ import { toRaw } from '@vue/reactivity'
 
 let auid = ''
 let server = ''
-let newEmptyFile =  new File([""], "Select Article Cover")
-
+let newEmptyFile =  new File([""], "")
 
 export default {
   data() {
@@ -84,21 +85,21 @@ export default {
         auid: '',
         lang: '',
         tags: '',
-        cover_url: 'Select Article Cover',
+        cover_url: this.$t('editor.modal_form_uploadtext'),
         cover: newEmptyFile
       },
       articleUID: '',
       toolbar: {
         openFileToolbar: {
           icon: 'bi bi-filetype-md',
-          title: 'Open Local Markdown',
+          title: this.$t('editor.open'),
           action(editor) {
             document.getElementById('mdFileIptHid').click()
           }
         },
         commitToolbar: {
           icon: 'bi bi-send',
-          title: 'Publish',
+          title: this.$t('editor.commit'),
           action(editor) {
             console.log(toRaw(editor).text)
             let postData = {
@@ -114,7 +115,7 @@ export default {
         },
         settingToolbar: {
           icon: 'bi bi-gear-wide-connected',
-          title: 'Settings',
+          title: this.$t('editor.setting'),
           action(editor) {
             document.getElementById('modalHideBtn').click()
           }
@@ -167,7 +168,7 @@ export default {
       }
       else {
         this.submitForm.cover = newEmptyFile
-        this.submitForm.cover_url = 'Select Article Cover'
+        this.submitForm.cover_url = this.$t('editor.modal_form_uploadtext')
       }
       // console.log(this.submitForm.cover)
     },
@@ -253,7 +254,7 @@ export default {
         let res = axios.get(this.$server + '/api/article/' + local_auid)
         res.then((r) => {
           let value = r.data
-          console.log(value)
+          // console.log(value)
           if (value.data.art_md){
             this.text = value.data.art_md;
             this.submitForm.cover_url = value.data.art_meta.cover_url;
@@ -284,6 +285,10 @@ export default {
 </script>
 
 <style>
+html, body {
+  overflow: auto !important;
+}
+
 .editor-container {
   width: 100%;
   margin-top: 100px;

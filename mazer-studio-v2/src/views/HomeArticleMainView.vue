@@ -59,13 +59,14 @@ export default {
         addCpEvent() {
             let cpFormulas = document.getElementsByClassName("cp-formula")
             for (let cpFormula of cpFormulas) {
+                cpFormula.innerText = this.$t('art.cp_formula')
                 cpFormula.addEventListener('click', (e) => {
                     this.copyFormula(cpFormula.getAttribute("data"), e);
                     cpFormula.style = "background-color: green";
-                    cpFormula.innerText = "Copied!"
+                    cpFormula.innerText = this.$t('art.cpd_formula')
                     setTimeout(() => {
                         cpFormula.style = "";
-                        cpFormula.innerText = "Copy Formula"
+                        cpFormula.innerText = this.$t('art.cp_formula')
                     }, 2000)
                 })
             }

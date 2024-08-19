@@ -11,7 +11,7 @@ import CopyRight from '../components/CopyRight.vue'
         <HomeArticleBox :sourceData="sData" @click="enterArticle(sData)" />
       </li>
       <li class="HomeBody" v-if="!sourceDataList.length">
-        <div class="Info">No Article Available Now</div>
+        <div class="Info">{{ $t('home.noart') }}</div>
       </li>
     </ul>
     <CopyRight />

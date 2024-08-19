@@ -13,13 +13,13 @@ import CopyRight from '../components/CopyRight.vue'
                 <div class="myProfile-desc">{{ userData.usr_desc }}</div>
             </div>
             <div class="myProfileBtns">
-                <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Edit</button>
+                <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> {{ $t('profile.edit') }}</button>
             </div>
         </div>
         <div class="myProfile-bottom">
             <div class="myArticles">
-                <div class="myArticles-title">My Articles</div>
-                <div v-if="!articles.length" class="myArticles-content">No Available Record</div>
+                <div class="myArticles-title">{{ $t('profile.my') }}</div>
+                <div v-if="!articles.length" class="myArticles-content">{{ $t('profile.norec') }}</div>
                 <div v-for="article in articles" :key="article.auid" class="myArticles-content">
                     <div class="article-left">
                         <div class="article-title">{{ article.title }}</div>
@@ -32,17 +32,17 @@ import CopyRight from '../components/CopyRight.vue'
                     <div class="article-btns">
                         <button type="button" class="btn btn-primary"
                                 data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="View Article">
+                                :data-bs-title="$t('profile.view_art')" @click="viewArticle(article.auid)">
                                 <i class="bi bi-eye-fill"></i>
                         </button>
                         <button type="button" class="btn btn-secondary"
                                 data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Edit Article" @click="editArticle(article.auid)">
+                                :data-bs-title="$t('profile.edit_art')" @click="editArticle(article.auid)">
                                 <i class="bi bi-nut-fill"></i>
                         </button>
                         <button type="button" class="btn btn-danger"
                                 data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Delete Article">
+                                :data-bs-title="$t('profile.delete_art')">
                                 <i class="bi bi-trash3-fill"></i>
                         </button>
                     </div>
@@ -71,6 +71,9 @@ export default {
         }
     },
     methods: {
+        viewArticle(pData) {
+            this.$router.push({name: "article", query: {'auid': pData}})
+        },
         editArticle(pData) {
             this.$router.push({name: "editor", query: {'auid': pData}})
         },
@@ -199,7 +202,7 @@ export default {
     border-radius: 10px;
     transition-duration: 0.1s;
     margin-top: 10px;
-    box-shadow: var(--bs-tertiary-color) 0px 0px 5px 0px inset;
+    box-shadow: var(--bs-tertiary-color) 0px 0px 4px 0px;
     border: 1px solid transparent;
 }
 

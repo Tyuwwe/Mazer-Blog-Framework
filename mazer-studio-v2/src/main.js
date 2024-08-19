@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import VueMarkdownEditor from '@kangc/v-md-editor';
 import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
+import i18n from '@/i18n/index'
 
 import './assets/style.scss'
 import "@popperjs/core"
@@ -23,6 +24,7 @@ const app = createApp(App)
 
 app.use(router)
 app.use(VueMarkdownEditor)
+app.use(i18n)
 
 app.mount('#app')
 

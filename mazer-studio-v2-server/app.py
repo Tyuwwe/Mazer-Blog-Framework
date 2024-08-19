@@ -39,7 +39,7 @@ class HighlightRenderer(mistune.HTMLRenderer):
         return f'<span class="math inline-math">{text}</span>'
 
     def block_math(self, text):
-        return f'<div class="block-math-container"><div class="math block-math">{text}</div><button class="cp-formula btn btn-secondary btn-sm" data="{text}">Copy Formula</button></div>'
+        return f'<div class="block-math-container"><div class="math block-math">{text}</div><button class="cp-formula btn btn-secondary btn-sm" data="{text}"></button></div>'
 
 # Server Table DB Class
 

@@ -1,5 +1,8 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { useI18n, createI18n } from 'vue-i18n';
+const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
+
 </script>
 
 <template>
@@ -17,10 +20,10 @@ import { RouterLink, RouterView } from 'vue-router'
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="#">{{ $t('topbar.home') }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">All Articles</a>
+            <a class="nav-link" href="#">{{ $t('topbar.all') }}</a>
           </li>
           <li class="nav-item nav-flex">
           <li class="nav-item">
@@ -37,25 +40,25 @@ import { RouterLink, RouterView } from 'vue-router'
           </li>
           <li v-if="bNotHaveToken" class="nav-item">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-              data-bs-target="#loginModel">Login</button>
+              data-bs-target="#loginModel">{{ $t('topbar.login') }}</button>
           </li>
           <li v-else class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
               aria-expanded="false"><i class="bi bi-person-circle"></i></a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#" @click="enterView('editor')"><i class="bi bi-pen-fill"></i> Write
-                  New Article</a></li>
-              <li><a class="dropdown-item" href="#" @click="enterView('profile')"><i class="bi bi-person-square"></i> My
-                  Profile</a></li>
-              <li><a class="dropdown-item dropdown-danger" @click="logout()"><i class="bi bi-x-circle-fill"></i> Log
-                  Out</a></li>
+              <li><a class="dropdown-item" href="#" @click="enterView('editor')"><i class="bi bi-pen-fill"></i>
+                  {{ $t('topbar.write') }}</a></li>
+              <li><a class="dropdown-item" href="#" @click="enterView('profile')"><i class="bi bi-person-square"></i>
+                  {{ $t('topbar.my') }}</a></li>
+              <li><a class="dropdown-item dropdown-danger" @click="logout()"><i class="bi bi-x-circle-fill"></i>
+                  {{ $t('topbar.logout') }}</a></li>
             </ul>
           </li>
           </li>
         </ul>
         <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search Articles" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+          <input class="form-control me-2" type="search" :placeholder="$t('topbar.search_text')" aria-label="Search">
+          <button style="width: 80px;" class="btn btn-outline-success" type="submit">{{ $t('topbar.search') }}</button>
         </form>
       </div>
     </div>
@@ -67,42 +70,52 @@ import { RouterLink, RouterView } from 'vue-router'
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 v-show="bLogin" class="modal-title fs-5 text-reset">Login</h1>
-          <h1 v-show="!bLogin" class="modal-title fs-5 text-reset">Signup</h1>
+          <h1 v-show="bLogin" class="modal-title fs-5 text-reset">{{ $t('topbar.login') }}</h1>
+          <h1 v-show="!bLogin" class="modal-title fs-5 text-reset">{{ $t('topbar.signup') }}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div v-show="!bLogin" class="form-floating mb-3">
             <input v-model="submitForm.usr" type="text" class="form-control" id="floatingUsr" placeholder="Username">
-            <label for="floatingUsr">Username</label>
+            <label for="floatingUsr">{{ $t('topbar.username') }}</label>
           </div>
           <div class="form-floating mb-3">
             <input v-model="submitForm.email" type="email" class="form-control" id="floatingInput"
-              placeholder="Email address">
-            <label for="floatingInput">Email address</label>
+              placeholder="">
+            <label for="floatingInput">{{ $t('topbar.email') }}</label>
           </div>
           <div class="form-floating mb-3">
             <input v-model="submitForm.psw" type="password" class="form-control" id="floatingPassword"
-              placeholder="Password">
-            <label for="floatingPassword">Password</label>
+              placeholder="">
+            <label for="floatingPassword">{{ $t('topbar.password') }}</label>
           </div>
-          <div v-show="bLogin" class="form-floating">
+          <div v-show="bLogin" class="form-floating mb-3">
             <input v-model="submitForm.twofa" type="password" class="form-control" id="floating2FA"
-              placeholder="2FA Passcode" disabled>
-            <label for="floating2FA">2FA Passcode</label>
+              placeholder="" disabled>
+            <label for="floating2FA">{{ $t('topbar.twofa') }}</label>
           </div>
-          <div v-show="bLogin" class="form-text">No account? <span class="clickText"
-              @click="switchLogin(false)">Signup</span> now.</div>
-          <div v-show="!bLogin" class="form-text">Have an account? <span class="clickText"
-              @click="switchLogin(true)">Login</span> now.</div>
+          <div v-show="bLogin">
+            <i18n-t keypath="topbar.noaccount" tag="div" class="form-text">
+              <template v-slot:reg>
+                <span class="clickText" @click="switchLogin(false)">{{ $t('topbar.signup') }}</span>
+              </template>
+            </i18n-t>
+          </div>
+          <div v-show="!bLogin">
+            <i18n-t keypath="topbar.havaccount" tag="div" class="form-text">
+              <template v-slot:log>
+                <span class="clickText" @click="switchLogin(true)">{{ $t('topbar.login') }}</span>
+              </template>
+            </i18n-t>
+          </div>
         </div>
         <div v-show="bLogin" class="modal-footer">
-          <button id="dismissModalBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" @click="handleLog()">Login</button>
+          <button type="button" class="btn btn-primary" @click="handleLog()">{{ $t('topbar.login') }}</button>
+          <button id="dismissModalBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t('topbar.close') }}</button>
         </div>
         <div v-show="!bLogin" class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" @click="handleReg()">Register</button>
+          <button type="button" class="btn btn-primary" @click="handleReg()">{{ $t('topbar.signup') }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t('topbar.close') }}</button>
         </div>
       </div>
     </div>
@@ -127,7 +140,7 @@ import { RouterLink, RouterView } from 'vue-router'
       aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="width: 100%;">
       <div class="d-flex">
         <div class="toast-body">
-          {{ lsMsg }}
+          {{ $t('topbar.ls_msg') }}
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"
           @click="checkedLS()"></button>
@@ -143,6 +156,8 @@ import axios from 'axios';
 import { Toast } from 'bootstrap';
 
 let storedTheme = localStorage.getItem('theme')
+
+const i18n = createI18n({})
 
 const getPreferredTheme = () => {
   if (storedTheme) {
@@ -187,14 +202,22 @@ export default {
         text: 'message',
         title: 'title',
         small: 'small'
-      },
-      lsMsg: 'Welcome! This website uses a small file, called \"LocalStorage\" to store some data. If you continue browsing, you will be deemed to agree to the use of LocalStorage.'
+      }
     }
   },
   methods: {
     setLang(lang) {
       localStorage.setItem('lang', lang)
-      location.reload()
+      // console.log(location.pathname)
+      if (location.pathname == '/article') {
+        this.$router.push({ path: '/' })
+        setTimeout(() => {
+          location.reload()
+        }, 0)
+      }
+      else {
+        location.reload()
+      }
     },
     initPage() {
       this.submitForm.token = localStorage.getItem('jwt');
@@ -227,25 +250,25 @@ export default {
       this.bLogin = true;
       this.bNotHaveToken = true;
       this.showToast({
-        text: "Log Out Successfully!",
-        title: "Info",
-        small: "Just Now"
+        text: this.$t('msg.logout_text'),
+        title: this.$t('msg.msg_info'),
+        small: this.$t('msg.msg_justnow')
       })
     },
     async handleReg() {
       try {
         await axios.post(this.$server + '/api/register', this.submitForm);
         this.showToast({
-          text: 'Registration Successful.',
-          title: 'Info',
-          small: 'Just Now'
+          text: this.$t('msg.reg_text'),
+          title: this.$t('msg.msg_info'),
+          small: this.$t('msg.msg_justnow')
         })
       }
       catch (error) {
         this.showToast({
-          text: error.response ? error.response.data.error : 'Registration failed',
-          title: 'Error',
-          small: 'Just Now'
+          text: error.response ? error.response.data.error : this.$t('msg.reg_text_err'),
+          title: this.$t('msg.msg_error'),
+          small: this.$t('msg.msg_justnow')
         })
         // console.log(error)
       }
@@ -260,9 +283,9 @@ export default {
       }
       catch (error) {
         this.showToast({
-          text: error.response ? error.response.data.error : 'Token expired, please re-login.',
-          title: 'Error',
-          small: 'Just Now'
+          text: error.response ? error.response.data.error : this.$t('msg.tok_text_err'),
+          title: this.$t('msg.msg_error'),
+          small: this.$t('msg.msg_justnow')
         })
         setTimeout(() => {
           this.logout()
@@ -273,9 +296,9 @@ export default {
       try {
         const res = await axios.post(this.$server + '/api/login', this.submitForm);
         this.showToast({
-          text: 'Login Successful.',
-          title: 'Info',
-          small: 'Just Now'
+          text: this.$t('msg.log_text'),
+          title: this.$t('msg.msg_info'),
+          small: this.$t('msg.msg_justnow')
         });
         this.submitForm.token = res.data.jwt;
         localStorage.setItem('jwt', res.data.jwt);
@@ -285,9 +308,9 @@ export default {
       }
       catch (error) {
         this.showToast({
-          text: error.response ? error.response.data.error : 'Login failed',
-          title: 'Error',
-          small: 'Just Now'
+          text: error.response ? error.response.data.error : this.$t('msg.log_text_err'),
+          title: this.$t('msg.msg_error'),
+          small: this.$t('msg.msg_justnow')
         })
         // console.log(error)
       }
@@ -301,6 +324,9 @@ export default {
     if (localStorage.getItem('jwt')) {
       this.bNotHaveToken = false;
       this.testToken()
+      setInterval(() => {
+        this.testToken()
+      }, 60000)
     }
     else {
       this.bNotHaveToken = true;
@@ -315,9 +341,6 @@ export default {
       this.showToastLS()
     }
     setTheme(getPreferredTheme())
-    setInterval(() => {
-      this.testToken()
-    }, 60000)
   }
 }
 
