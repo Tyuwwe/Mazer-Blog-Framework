@@ -11,9 +11,8 @@
 <img src="https://img.shields.io/badge/Flask-v3-rgb(58,169,191).svg" alt="flask">
 
 <br>
-A All-in-one Blog Framework
+An All-in-one Blog Framework
 <br>
-Powered by Vue / Node.js / PostgreSQL / Flask
 
 You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-Framework/releases)
 
