@@ -1,4 +1,4 @@
-<div align="center"> 
+<div align="center">
 
 ![Logo](./src/logo.svg)
 
@@ -16,7 +16,6 @@ An All-in-one Blog Framework
 <br>
 
 You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-Framework/releases)
-
 
 </div>
 
@@ -58,7 +57,11 @@ serve
 
 ### 5. Run Python Flask
 
-Enter folder & run `python ./app.py`, the server will connect PostgreSQL and print logs.
+**Development Server:** Enter folder & run `python ./app.py`, the server will connect PostgreSQL and print logs.
+
+**Production Server:** Use any WSGI server and connect to the flask server.
+
+It's recommended to use a production server, dev server may be unsafe.
 
 ## Build
 
