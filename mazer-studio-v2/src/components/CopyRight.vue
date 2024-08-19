@@ -3,6 +3,7 @@
 
 <template>
     <div class="cp-box">
+        <a href="https://github.com/Tyuwwe/Mazer-Blog-Framework/" class="cp-ba">Mazer Blog Framework (MBF)</a>
         <div class="cp-text">Copyright ©️ 2024 - Tyuwwe</div>
         <a href="https://beian.miit.gov.cn/" class="cp-ba">陕ICP备2022000669号-1</a>
     </div>

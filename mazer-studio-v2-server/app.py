@@ -375,6 +375,19 @@ def publishArt():
             db.session.rollback()
             return jsonify({'error': 'Publish Failed.'}), 400
 
+# Like Article
+@app.route('/api/like', methods=['PUT'])
+def likeArt():
+    data = request.get_json()
+    auid = data['auid']
+    art = Articles.query.filter_by(auid=auid).first()
+    if art:
+        art.likes += 1
+        db.session.commit()
+        return jsonify({'message': 'Liked Successful!'}), 201
+    else:
+        return jsonify({'error': 'Liked Failed.'}), 400
+
 if __name__ == '__main__':
     # generateHTML(filePath + '/static/markdown')
     app.run(debug=True)

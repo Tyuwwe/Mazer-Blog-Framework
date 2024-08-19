@@ -4,7 +4,7 @@
 
 # Mazer-Blog-Framework
 
-<img src="https://img.shields.io/badge/Latest-1.9.0-red.svg" alt="mbf">
+<img src="https://img.shields.io/badge/Latest-1.9.1-red.svg" alt="mbf">
 <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="python">
 <img src="https://img.shields.io/badge/Node.js-v20+-rgb(67,141,64).svg" alt="node">
 <img src="https://img.shields.io/badge/Vue.js-v3-rgb(53,73,94).svg" alt="vue">

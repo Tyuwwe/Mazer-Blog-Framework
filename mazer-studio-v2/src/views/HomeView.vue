@@ -35,9 +35,9 @@ export default {
     async fetchArticle() {
       const res = axios.get(this.$server + '/api/articles/' + localStorage.getItem('lang'))
       res.then((value) => {
-        console.log(value)
+        // console.log(value)
         this.sourceDataList = value.data.arts
-        console.log(this.sourceDataList)
+        // console.log(this.sourceDataList)
       })
     }  
   },

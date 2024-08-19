@@ -44,7 +44,8 @@ export default {
     },
     art: {
         cp_formula: '复制公式',
-        cpd_formula: '已复制！'
+        cpd_formula: '已复制！',
+        share_cp: '链接已复制！打开软件分享给朋友们吧！'
     },
     msg: {
         msg_info: '信息',

@@ -44,7 +44,8 @@ export default {
     },
     art: {
         cp_formula: 'Copy Formula',
-        cpd_formula: 'Copied!'
+        cpd_formula: 'Copied!',
+        share_cp: 'Link copied! Open the software and share the link with friends!'
     },
     msg: {
         msg_info: 'Info',
