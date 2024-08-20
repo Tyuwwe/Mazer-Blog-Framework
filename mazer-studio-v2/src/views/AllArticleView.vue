@@ -30,7 +30,7 @@ import CopyRight from '../components/CopyRight.vue'
         <div v-for="art in arts" :key="art.auid"class="card mb-3 art-card" @click="enterArticle(art.auid)" style="width: 100%;">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img :src="this.$server + art.cover_url" class="img-fluid rounded-start card-cover-img" alt="art_cover">
+                    <img :src="serverUrl + art.cover_url" class="img-fluid rounded-start card-cover-img" alt="art_cover">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
@@ -62,6 +62,7 @@ export default {
                 lang: ''
             },
             arts: {},
+            serverUrl: this.$server
         }
     },
     methods: {

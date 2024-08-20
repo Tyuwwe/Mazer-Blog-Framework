@@ -20,10 +20,10 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" @click="this.$router.push({ name: 'home' })" href="#">{{ $t('topbar.home') }}</a>
+            <a class="nav-link active" aria-current="page" @click="enterView('home')" href="#">{{ $t('topbar.home') }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" @click="this.$router.push({ name: 'all' })" href="#">{{ $t('topbar.all') }}</a>
+            <a class="nav-link active" @click="enterView('all')" href="#">{{ $t('topbar.all') }}</a>
           </li>
           <li class="nav-item nav-flex">
           <li class="nav-item">
