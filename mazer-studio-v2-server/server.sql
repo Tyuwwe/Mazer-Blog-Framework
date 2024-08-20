@@ -39,16 +39,3 @@ CREATE TABLE articles (
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     publish_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE OR REPLACE FUNCTION update_articles_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.update_date = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER articles_updated_at_trigger
-BEFORE UPDATE ON articles
-FOR EACH ROW
-EXECUTE FUNCTION update_articles_updated_at();

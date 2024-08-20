@@ -57,5 +57,20 @@ export default {
         reg_text: '注册成功！',
         reg_text_err: '注册失败',
         tok_text_err: 'Token 过期，请重新登录',
+    },
+    all: {
+        filter: '筛选',
+        filter_text: '通过标题筛选',
+        lang: '语言',
+        all_lang: '全部语言',
+        sort_by: '排序',
+        newest: '最新（默认）',
+        highestlikes: '最多点赞',
+        lastupdate: '最后更新',
+        lastupdated: '最后更新于',
+        published: '发布于',
+        likes: '点赞数',
+        author: '作者',
+        no_filter: '没有符合筛选条件的文章'
     }
 }

@@ -23,7 +23,7 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
             <a class="nav-link active" aria-current="page" @click="this.$router.push({ name: 'home' })" href="#">{{ $t('topbar.home') }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">{{ $t('topbar.all') }}</a>
+            <a class="nav-link active" @click="this.$router.push({ name: 'all' })" href="#">{{ $t('topbar.all') }}</a>
           </li>
           <li class="nav-item nav-flex">
           <li class="nav-item">

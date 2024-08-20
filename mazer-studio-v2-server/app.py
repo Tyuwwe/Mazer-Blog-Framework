@@ -6,6 +6,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from sqlalchemy import or_
 from config import Config
 from datetime import datetime, timedelta
 from exts import jwt
@@ -20,7 +21,7 @@ db = SQLAlchemy(app)
 
 filePath = os.path.dirname(os.path.abspath(__file__))
 
-ALLOWED_IMG_EXT = set(['png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF', 'webp', 'WEBP', 'avif', 'AVIF', 'jpeg', 'JPEG'])
+ALLOWED_IMG_EXT = set(['png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF', 'webp', 'WEBP', 'avif', 'AVIF', 'jpeg', 'JPEG', 'svg', 'SVG'])
  
 def allowed_img(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_IMG_EXT
@@ -61,7 +62,7 @@ class Syslog(db.Model):
     log_id = db.Column(db.Integer, primary_key=True)
     evt_id = db.Column(db.Integer, nullable=False)
     evt_text = db.Column(db.Text, nullable=False)
-    evt_at = db.Column(db.DateTime, default=datetime.utcnow)
+    evt_at = db.Column(db.DateTime, default=datetime.now)
 
 class Pages(db.Model):
     __tablename__ = 'pages'
@@ -83,8 +84,8 @@ class Articles(db.Model):
     tags = db.Column(db.String(200))
     lang = db.Column(db.String(8))
     likes = db.Column(db.Integer, default=0)
-    update_date = db.Column(db.DateTime, default=datetime.utcnow)
-    publish_date = db.Column(db.DateTime, default=datetime.utcnow)
+    update_date = db.Column(db.DateTime, default=datetime.now)
+    publish_date = db.Column(db.DateTime, default=datetime.now)
     
     def serialize(self):
         return {
@@ -231,6 +232,24 @@ def getArticles(lang):
     arts_list = [art.serialize() for art in arts]
     return jsonify({'message': 'Get successful!', 'arts': arts_list}), 201
 
+# Sort Articles
+@app.route('/api/articles', methods=['POST'])
+def sortArticles():
+    data = request.get_json()
+    keyword = data.get('keyword', '')
+    lang = data.get('lang', '')
+    query = Articles.query
+    if keyword:
+        query = query.filter(or_(
+            Articles.title.ilike(f'%{keyword}%'),
+            Articles.tags.ilike(f'%{keyword}%')
+        ))
+    if lang:
+        query = query.filter_by(lang=lang)
+    arts = query.all()
+    arts_list = [art.serialize() for art in arts]
+    return jsonify({'message': 'Get successful!', 'arts': arts_list}), 200
+
 # Get Articles by User
 @app.route('/api/articles', methods=['GET'])
 @jwt_required()
@@ -282,6 +301,8 @@ def saveMD():
         db.session.commit()
     if art:
         try:
+            art.update_date = datetime.now()
+            db.session.commit()
             with open(filePath + art.md_url, 'w', encoding='utf-8') as file:
                 file.write(md)
             return jsonify({'message': 'Save Successful!'}), 201
@@ -321,6 +342,7 @@ def saveMeta():
         art.cover_url = cover_url
         art.tags = tags
         art.lang = lang
+        art.update_date = datetime.now()
     else:
         newArt = Articles(auid=auid, author_email=email, title=title, \
             lang=lang, tags=tags, cover_url=cover_url)
@@ -351,6 +373,7 @@ def publishArt():
         with open(filePath + art.md_url, 'w', encoding='utf-8') as file:
             file.write(md)
         genHTML = generateHTMLbyFile(art.md_url)
+        art.update_date = datetime.now()
         if art.ht_url and os.path.exists(filePath.replace('\\', '/') + art.ht_url):
             os.remove(filePath.replace('\\', '/') + art.ht_url)
         art.ht_url = genHTML

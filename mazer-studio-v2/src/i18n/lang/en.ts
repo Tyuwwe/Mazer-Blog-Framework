@@ -57,5 +57,20 @@ export default {
         reg_text: 'Registration Successful!',
         reg_text_err: 'Registration failed',
         tok_text_err: 'Token expired, please re-login',
+    },
+    all: {
+        filter: 'Filter',
+        filter_text: 'Filter by title',
+        lang: 'Language',
+        all_lang: 'All Language',
+        sort_by: 'Sort by',
+        newest: 'Newest (Default)',
+        highestlikes: 'Highest Likes',
+        lastupdate: 'Last Update',
+        lastupdated: 'Last Updated at',
+        published: 'Published at',
+        likes: 'Likes',
+        author: 'Author',
+        no_filter: 'There are no articles that meet the filter results.'
     }
 }
