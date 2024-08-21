@@ -9,7 +9,7 @@ import Prism from "prismjs"
         <div class="HomeArticleContainerBox">
             <div class="topImg">
                 <HomeArticleMainTop :sourceData="sourceData" />
-            </div>       
+            </div>
             <div v-html="articleMain.text" class="main-text"></div>
             <div class="ArticleBottomBox">
                 <div class="bottomLeft">
@@ -75,7 +75,7 @@ export default {
             if (!bCanLike) return;
             bCanLike = false;
             try {
-                await axios.put(this.$server + '/api/like', {auid: this.auid});
+                await axios.put(this.$server + '/api/like', { auid: this.auid });
                 this.sourceData.likes += 1;
                 setTimeout(() => {
                     bCanLike = true;
@@ -161,22 +161,51 @@ export default {
 
 <style scoped>
 @keyframes swing {
-    0% {transform: rotate(0deg) scale(1);}
-    25% {transform: rotate(-15deg);}
-    50% {transform: rotate(15deg) scale(1.1);}
-    75% {transform: rotate(-15deg);}
-    100% {transform: rotate(15deg) scale(1);}
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    25% {
+        transform: rotate(-15deg);
+    }
+
+    50% {
+        transform: rotate(15deg) scale(1.1);
+    }
+
+    75% {
+        transform: rotate(-15deg);
+    }
+
+    100% {
+        transform: rotate(15deg) scale(1);
+    }
 }
 
 @keyframes swingScale {
-    0% {transform: rotate(0deg) scale(1.1);}
-    25% {transform: rotate(-15deg) scale(1.1);}
-    50% {transform: rotate(15deg) scale(1.1);}
-    75% {transform: rotate(-15deg) scale(1.1);}
-    100% {transform: rotate(15deg) scale(1.1);}
+    0% {
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    25% {
+        transform: rotate(-15deg) scale(1.1);
+    }
+
+    50% {
+        transform: rotate(15deg) scale(1.1);
+    }
+
+    75% {
+        transform: rotate(-15deg) scale(1.1);
+    }
+
+    100% {
+        transform: rotate(15deg) scale(1.1);
+    }
 }
 
-.likes, .shares {
+.likes,
+.shares {
     height: 40px;
     border-radius: 20px;
     padding: 10px;
@@ -186,7 +215,8 @@ export default {
     align-items: center;
 }
 
-.likes i, .shares i {
+.likes i,
+.shares i {
     color: var(--primary-text-dark);
     width: 30px;
     height: 30px;
@@ -206,12 +236,14 @@ export default {
     margin-right: 5px;
 }
 
-.likes i:hover, .shares i:hover {
+.likes i:hover,
+.shares i:hover {
     animation: swing 1s infinite;
     background-color: var(--bs-dark-bg-subtle);
 }
 
-.likes i:active, .shares i:active {
+.likes i:active,
+.shares i:active {
     background-color: var(--bs-secondary-color);
     color: var(--bs-secondary-bg);
     animation: swingScale 1s infinite;
@@ -255,7 +287,6 @@ export default {
     width: 100%;
     overflow-x: auto;
 }
-
 </style>
 
 <style>
@@ -276,9 +307,9 @@ export default {
     background-color: var(--bs-secondary-bg);
 }
 
-.main-text tr, 
+.main-text tr,
 .main-text td,
-.main-text th  {
+.main-text th {
     border: rgb(170, 170, 170) 1px solid;
     padding: 5px;
 }

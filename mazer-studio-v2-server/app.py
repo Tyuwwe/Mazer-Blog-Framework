@@ -3,12 +3,11 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import create_access_token
-from flask_jwt_extended import create_refresh_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from sqlalchemy import or_
 from config import Config
-from datetime import datetime, timedelta
+from datetime import datetime
 from exts import jwt
 import mistune, os, glob, uuid
 

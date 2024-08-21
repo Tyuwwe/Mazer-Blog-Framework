@@ -13,7 +13,8 @@ import CopyRight from '../components/CopyRight.vue'
                 <div class="myProfile-desc">{{ userData.usr_desc }}</div>
             </div>
             <div class="myProfileBtns">
-                <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> {{ $t('profile.edit') }}</button>
+                <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> {{ $t('profile.edit')
+                    }}</button>
             </div>
         </div>
         <div class="myProfile-bottom">
@@ -24,26 +25,24 @@ import CopyRight from '../components/CopyRight.vue'
                     <div class="article-left">
                         <div class="article-title">{{ article.title }}</div>
                         <div class="article-info">
-                            <div class="article-date"><i class="bi bi-calendar-date-fill"></i> {{ article.publish_date.split('T')[0] }}</div>
+                            <div class="article-date"><i class="bi bi-calendar-date-fill"></i> {{
+                                article.publish_date.split('T')[0] }}</div>
                             <div class="article-likes"><i class="bi bi-suit-heart-fill"></i> {{ article.likes }}</div>
                             <div class="article-lang"><i class="bi bi-translate"></i> {{ article.lang }}</div>
                         </div>
                     </div>
                     <div class="article-btns">
-                        <button type="button" class="btn btn-primary"
-                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                :data-bs-title="$t('profile.view_art')" @click="viewArticle(article.auid)">
-                                <i class="bi bi-eye-fill"></i>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+                            :data-bs-title="$t('profile.view_art')" @click="viewArticle(article.auid)">
+                            <i class="bi bi-eye-fill"></i>
                         </button>
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                :data-bs-title="$t('profile.edit_art')" @click="editArticle(article.auid)">
-                                <i class="bi bi-nut-fill"></i>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top"
+                            :data-bs-title="$t('profile.edit_art')" @click="editArticle(article.auid)">
+                            <i class="bi bi-nut-fill"></i>
                         </button>
-                        <button type="button" class="btn btn-danger"
-                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                :data-bs-title="$t('profile.delete_art')">
-                                <i class="bi bi-trash3-fill"></i>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top"
+                            :data-bs-title="$t('profile.delete_art')">
+                            <i class="bi bi-trash3-fill"></i>
                         </button>
                     </div>
                 </div>
@@ -72,10 +71,10 @@ export default {
     },
     methods: {
         viewArticle(pData) {
-            this.$router.push({name: "article", query: {'auid': pData}})
+            this.$router.push({ name: "article", query: { 'auid': pData } })
         },
         editArticle(pData) {
-            this.$router.push({name: "editor", query: {'auid': pData}})
+            this.$router.push({ name: "editor", query: { 'auid': pData } })
         },
         initTooltips() {
             const tooltipTriggers = document.getElementsByClassName('article-btns');
@@ -83,7 +82,7 @@ export default {
             for (let tooltip_element of tooltipTriggers) {
                 tooltipTriggerList.push(...(tooltip_element.childNodes))
             }
-            [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl, {trigger : 'hover'}));
+            [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl, { trigger: 'hover' }));
             [...tooltipTriggerList].forEach(element => {
                 element.addEventListener('click', () => {
                     const elems = document.getElementsByClassName('tooltip')
@@ -150,7 +149,8 @@ export default {
     flex-direction: column;
 }
 
-.myProfile-top, .myProfile-bottom {
+.myProfile-top,
+.myProfile-bottom {
     box-sizing: border-box;
     padding: 20px;
     width: 100%;
@@ -234,7 +234,9 @@ export default {
     display: flex;
 }
 
-.article-date, .article-likes, .article-lang {
+.article-date,
+.article-likes,
+.article-lang {
     text-wrap: nowrap;
     padding-right: 10px;
 }

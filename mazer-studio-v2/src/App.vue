@@ -20,7 +20,8 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" @click="enterView('home')" href="#">{{ $t('topbar.home') }}</a>
+            <a class="nav-link active" aria-current="page" @click="enterView('home')" href="#">{{ $t('topbar.home')
+              }}</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" @click="enterView('all')" href="#">{{ $t('topbar.all') }}</a>
@@ -34,13 +35,15 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
               aria-expanded="false"><i class="bi bi-translate"></i></a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" @click="setLang('zh')" href="#"><span class="flag-icon flag-icon-cn"></span> 中文(简体)</a></li>
-              <li><a class="dropdown-item" @click="setLang('en')" href="#"><span class="flag-icon flag-icon-us"></span> English(US)</a></li>
+              <li><a class="dropdown-item" @click="setLang('zh')" href="#"><span class="flag-icon flag-icon-cn"></span>
+                  中文(简体)</a></li>
+              <li><a class="dropdown-item" @click="setLang('en')" href="#"><span class="flag-icon flag-icon-us"></span>
+                  English(US)</a></li>
             </ul>
           </li>
           <li v-if="bNotHaveToken" class="nav-item">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-              data-bs-target="#loginModel">{{ $t('topbar.login') }}</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModel">{{
+              $t('topbar.login') }}</button>
           </li>
           <li v-else class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -80,18 +83,16 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
             <label for="floatingUsr">{{ $t('topbar.username') }}</label>
           </div>
           <div class="form-floating mb-3">
-            <input v-model="submitForm.email" type="email" class="form-control" id="floatingInput"
-              placeholder="">
+            <input v-model="submitForm.email" type="email" class="form-control" id="floatingInput" placeholder="">
             <label for="floatingInput">{{ $t('topbar.email') }}</label>
           </div>
           <div class="form-floating mb-3">
-            <input v-model="submitForm.psw" type="password" class="form-control" id="floatingPassword"
-              placeholder="">
+            <input v-model="submitForm.psw" type="password" class="form-control" id="floatingPassword" placeholder="">
             <label for="floatingPassword">{{ $t('topbar.password') }}</label>
           </div>
           <div v-show="bLogin" class="form-floating mb-3">
-            <input v-model="submitForm.twofa" type="password" class="form-control" id="floating2FA"
-              placeholder="" disabled>
+            <input v-model="submitForm.twofa" type="password" class="form-control" id="floating2FA" placeholder=""
+              disabled>
             <label for="floating2FA">{{ $t('topbar.twofa') }}</label>
           </div>
           <div v-show="bLogin">
@@ -111,7 +112,9 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
         </div>
         <div v-show="bLogin" class="modal-footer">
           <button type="button" class="btn btn-primary" @click="handleLog()">{{ $t('topbar.login') }}</button>
-          <button id="dismissModalBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t('topbar.close') }}</button>
+          <button id="dismissModalBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{
+            $t('topbar.close')
+            }}</button>
         </div>
         <div v-show="!bLogin" class="modal-footer">
           <button type="button" class="btn btn-primary" @click="handleReg()">{{ $t('topbar.signup') }}</button>

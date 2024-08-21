@@ -6,7 +6,8 @@
         <div class="article-text-container">
             <div class="article-title-text">
                 {{ sourceData.title }}
-                <div class="article-author-text"><i class="bi bi-person-circle"></i> {{ sourceData.author_email }} / {{ sourceData.publish_date.split('T')[0] }}</div>
+                <div class="article-author-text"><i class="bi bi-person-circle"></i> {{ sourceData.author_email }} / {{
+                    sourceData.publish_date.split('T')[0] }}</div>
             </div>
         </div>
         <div class="article-background-image">
@@ -49,7 +50,7 @@ export default {
     margin: 10px 0 10px 0px;
 }
 
-.article-container:hover .article-bkg-img{
+.article-container:hover .article-bkg-img {
     transform: scale(1.0);
 }
 

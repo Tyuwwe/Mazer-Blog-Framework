@@ -13,13 +13,8 @@ if (localStorage.getItem('lang') == 'en') {
   <div class="editor-container">
     <v-md-editor v-model="text" height="600px"
       left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | openFileToolbar save commitToolbar settingToolbar"
-      right-toolbar="preview toc sync-scroll"
-      :default-fullscreen=true
-      :default-show-toc=true
-      :disabled-menus="[]" 
-      :toolbar="toolbar"
-      @upload-image="handleUploadImage"
-      @save="saveArticle" />
+      right-toolbar="preview toc sync-scroll" :default-fullscreen=true :default-show-toc=true :disabled-menus="[]"
+      :toolbar="toolbar" @upload-image="handleUploadImage" @save="saveArticle" />
   </div>
 
   <div class="modal fade" id="createModel" tabindex="-1" aria-hidden="true">
@@ -35,7 +30,8 @@ if (localStorage.getItem('lang') == 'en') {
             <label for="floatingTitle">{{ $t('editor.modal_form_title') }}</label>
           </div>
           <div class="form-floating mb-3">
-            <input v-model="submitForm.tags" type="text" class="form-control" id="floatingTags" placeholder="Article Tags">
+            <input v-model="submitForm.tags" type="text" class="form-control" id="floatingTags"
+              placeholder="Article Tags">
             <label for="floatingTags">{{ $t('editor.modal_form_tags') }}</label>
           </div>
           <div class="form-floating mb-3">
@@ -46,22 +42,27 @@ if (localStorage.getItem('lang') == 'en') {
             <label for="selectLangOptions">{{ $t('editor.modal_form_selectlang') }}</label>
           </div>
           <div class="input-group mb-3">
-            <button @click="uploadCover()" class="btn btn-outline-secondary" type="button" id="button-addon1">{{ $t('editor.modal_form_upload') }}</button>
-            <input id="coverIptVis" type="text" class="form-control" :placeholder="submitForm.cover_url" aria-label="Article Cover" aria-describedby="button-addon1" disabled>
+            <button @click="uploadCover()" class="btn btn-outline-secondary" type="button" id="button-addon1">{{
+              $t('editor.modal_form_upload') }}</button>
+            <input id="coverIptVis" type="text" class="form-control" :placeholder="submitForm.cover_url"
+              aria-label="Article Cover" aria-describedby="button-addon1" disabled>
           </div>
           <div class="form-floating">
-            <input type="text" readonly class="form-control-plaintext" id="floatingPlaintextInput" :placeholder="submitForm.auid" :value="submitForm.auid">
+            <input type="text" readonly class="form-control-plaintext" id="floatingPlaintextInput"
+              :placeholder="submitForm.auid" :value="submitForm.auid">
             <label for="floatingPlaintextInput">{{ $t('editor.modal_form_auid') }}</label>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" @click="submitMeta()">{{ $t('editor.modal_form_submit') }}</button>
+          <button type="submit" class="btn btn-primary" @click="submitMeta()">{{ $t('editor.modal_form_submit')
+            }}</button>
         </div>
       </div>
     </div>
   </div>
 
-  <button id="modalHideBtn" style="display: none;" type="button" data-bs-toggle="modal" data-bs-target="#createModel"></button>
+  <button id="modalHideBtn" style="display: none;" type="button" data-bs-toggle="modal"
+    data-bs-target="#createModel"></button>
   <input ref="file" id="coverIptHid" style="display: none;" type="file" @change="getFileData">
   <input accept=".md" ref="mdFile" id="mdFileIptHid" style="display: none;" type="file" @change="getMarkdownLocal">
 
@@ -74,7 +75,7 @@ import { toRaw } from '@vue/reactivity'
 
 let auid = ''
 let server = ''
-let newEmptyFile =  new File([""], "")
+let newEmptyFile = new File([""], "")
 
 export default {
   data() {
@@ -177,9 +178,9 @@ export default {
         let mdFile = this.$refs.mdFile.files[0]
         let mdLocal = new FileReader()
         let res = ""
-				mdLocal.onload = function(e) {
-					res = String(e.target.result);
-				};
+        mdLocal.onload = function (e) {
+          res = String(e.target.result);
+        };
         mdLocal.readAsText(mdFile, "UTF-8")
         setTimeout(() => {
           this.text = res
@@ -255,7 +256,7 @@ export default {
         res.then((r) => {
           let value = r.data
           // console.log(value)
-          if (value.data.art_md){
+          if (value.data.art_md) {
             this.text = value.data.art_md;
             this.submitForm.cover_url = value.data.art_meta.cover_url;
             this.submitForm.tags = value.data.art_meta.tags;
@@ -285,7 +286,8 @@ export default {
 </script>
 
 <style>
-html, body {
+html,
+body {
   overflow: auto !important;
 }
 

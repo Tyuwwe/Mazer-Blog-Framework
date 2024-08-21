@@ -7,7 +7,8 @@ import CopyRight from '../components/CopyRight.vue'
         <div class="AllFilter mb-4 btn-group">
             <div class="dropdown-container">
                 <div class="dropdown filter-dropdown">
-                    <select @change="fetchArticle()" v-model="sortForm.lang" class="form-select" aria-label="LangSelect">
+                    <select @change="fetchArticle()" v-model="sortForm.lang" class="form-select"
+                        aria-label="LangSelect">
                         <option value="">{{ $t('all.all_lang') }}</option>
                         <option value="zh">中文（简体）</option>
                         <option value="en">English (US)</option>
@@ -23,14 +24,18 @@ import CopyRight from '../components/CopyRight.vue'
             </div>
             <div class="input-group" style="display: flex; justify-content: end;">
                 <input type="password" hidden>
-                <input v-model="sortForm.keyword" class="form-control rounded-start filter-input" type="search" :placeholder="$t('all.filter_text')" autocomplete="new-password">
-                <button @click="fetchArticle()" style="width: 80px;" class="btn btn-secondary" type="submit">{{ $t('all.filter') }}</button>
+                <input v-model="sortForm.keyword" class="form-control rounded-start filter-input" type="search"
+                    :placeholder="$t('all.filter_text')" autocomplete="new-password">
+                <button @click="fetchArticle()" style="width: 80px;" class="btn btn-secondary" type="submit">{{
+                    $t('all.filter') }}</button>
             </div>
         </div>
-        <div v-for="art in arts" :key="art.auid"class="card mb-3 art-card" @click="enterArticle(art.auid)" style="width: 100%;">
+        <div v-for="art in arts" :key="art.auid" class="card mb-3 art-card" @click="enterArticle(art.auid)"
+            style="width: 100%;">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img :src="serverUrl + art.cover_url" class="img-fluid rounded-start card-cover-img" alt="art_cover">
+                    <img :src="serverUrl + art.cover_url" class="img-fluid rounded-start card-cover-img"
+                        alt="art_cover">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
@@ -38,10 +43,16 @@ import CopyRight from '../components/CopyRight.vue'
                         <div class="card-tag-box mt-2 mb-2">
                             <div class="card-tags" v-for="tag in art.tags.split(', ')">{{ tag }}</div>
                         </div>
-                        <p class="card-text mb-0"><small class="text-muted"><i class="bi bi-clock-fill"></i> {{ $t('all.published') }} {{ art.publish_date.split('T')[0] + ' ' + art.publish_date.split('T')[1].split('.')[0] }}</small></p>
-                        <p class="card-text mb-0"><small class="text-muted"><i class="bi bi-clock-fill"></i> {{ $t('all.lastupdated') }} {{ art.update_date.split('T')[0] + ' ' + art.update_date.split('T')[1].split('.')[0] }}</small></p>
-                        <p class="card-text mb-0"><small class="text-muted"><i class="bi bi-hand-thumbs-up-fill"></i> {{ $t('all.likes') }} {{ art.likes }}</small></p>
-                        <p class="card-text"><small class="text-muted"><i class="bi bi-person-circle"></i> {{ $t('all.author') }} {{ art.author_email }}</small></p>
+                        <p class="card-text mb-0"><small class="text-muted"><i class="bi bi-clock-fill"></i> {{
+                                $t('all.published') }} {{ art.publish_date.split('T')[0] + ' ' +
+                                    art.publish_date.split('T')[1].split('.')[0] }}</small></p>
+                        <p class="card-text mb-0"><small class="text-muted"><i class="bi bi-clock-fill"></i> {{
+                                $t('all.lastupdated') }} {{ art.update_date.split('T')[0] + ' ' +
+                                    art.update_date.split('T')[1].split('.')[0] }}</small></p>
+                        <p class="card-text mb-0"><small class="text-muted"><i class="bi bi-hand-thumbs-up-fill"></i> {{
+                                $t('all.likes') }} {{ art.likes }}</small></p>
+                        <p class="card-text"><small class="text-muted"><i class="bi bi-person-circle"></i> {{
+                                $t('all.author') }} {{ art.author_email }}</small></p>
                     </div>
                 </div>
             </div>
@@ -73,7 +84,7 @@ export default {
         },
         enterArticle(auid) {
             window.scroll(0, 0);
-            this.$router.push({name: "article", query: {'auid': auid}})
+            this.$router.push({ name: "article", query: { 'auid': auid } })
         },
         sortArticle(sortType) {
             if (sortType == '1') {
@@ -179,13 +190,14 @@ export default {
 }
 
 @media only screen and (max-width: 767px) {
-    .AllFilter { 
+    .AllFilter {
         flex-direction: column;
     }
+
     .filter-dropdown {
         flex: 1;
         margin-right: 0px;
         margin-bottom: 12px;
-    } 
+    }
 }
 </style>

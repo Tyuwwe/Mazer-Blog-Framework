@@ -9,7 +9,8 @@
         <div class="article-text-container">
             <div class="article-title-text">
                 {{ sourceData.title }}
-                <div class="article-author-text"><i class="bi bi-person-circle"></i> {{ sourceData.author_email }} / {{ sourceData.publish_date.split('T')[0] }}</div>
+                <div class="article-author-text"><i class="bi bi-person-circle"></i> {{ sourceData.author_email }} / {{
+                    sourceData.publish_date.split('T')[0] }}</div>
             </div>
         </div>
         <div class="article-background-color"></div>

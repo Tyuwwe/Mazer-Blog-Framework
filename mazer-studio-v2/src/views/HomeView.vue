@@ -30,7 +30,7 @@ export default {
   methods: {
     enterArticle(sData) {
       window.scroll(0, 0);
-      this.$router.push({name: "article", query: {'auid': sData.auid}})
+      this.$router.push({ name: "article", query: { 'auid': sData.auid } })
     },
     async fetchArticle() {
       const res = axios.get(this.$server + '/api/articles/' + localStorage.getItem('lang'))
@@ -39,7 +39,7 @@ export default {
         this.sourceDataList = value.data.arts
         // console.log(this.sourceDataList)
       })
-    }  
+    }
   },
   mounted() {
     this.fetchArticle()
