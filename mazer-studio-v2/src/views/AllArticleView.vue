@@ -41,7 +41,7 @@ import CopyRight from '../components/CopyRight.vue'
                     <div class="card-body">
                         <h5 class="card-title">{{ art.title }}</h5>
                         <div class="card-tag-box mt-2 mb-2">
-                            <div class="card-tags" v-for="tag in art.tags.split(', ')">{{ tag }}</div>
+                            <span class="badge rounded-pill text-bg-secondary me-1" v-for="tag in art.tags.split(', ')">{{ tag }}</span>
                         </div>
                         <p class="card-text mb-0"><small class="text-muted"><i class="bi bi-clock-fill"></i> {{
                                 $t('all.published') }} {{ art.publish_date.split('T')[0] + ' ' +
@@ -79,7 +79,7 @@ export default {
     methods: {
         async fetchArticle() {
             let res = await axios.post(this.$server + '/api/articles', this.sortForm);
-            console.log(res)
+            // console.log(res)
             this.arts = res.data.arts
         },
         enterArticle(auid) {
@@ -122,7 +122,7 @@ export default {
 <style scoped>
 .AllContainer {
     max-width: 1200px;
-    min-width: 400px;
+    min-width: 350px;
     width: 75%;
     margin: auto;
     margin-top: 100px;

@@ -294,6 +294,8 @@ def saveMD():
     
     art = Articles.query.filter_by(auid=auid).first()
     # Exist MD
+    if art and art.author_email != email:
+        return jsonify({'error': 'Save Failed. User not match.'}), 400
     if art and not art.md_url:
         savePath = '/static/markdown/' + auid + '.md'
         art.md_url = savePath
@@ -364,6 +366,8 @@ def publishArt():
     
     art = Articles.query.filter_by(auid=auid).first()
     # Exist MD
+    if art and art.author_email != email:
+        return jsonify({'error': 'Publish Failed. User not match.'}), 400
     if art and not art.md_url:
         savePath = '/static/markdown/' + auid + '.md'
         art.md_url = savePath
@@ -409,6 +413,45 @@ def likeArt():
         return jsonify({'message': 'Liked Successful!'}), 201
     else:
         return jsonify({'error': 'Liked Failed.'}), 400
+
+# Delete Article
+@app.route('/api/article', methods=['DELETE'])
+@jwt_required()
+def deleteArticle():
+    email = get_jwt_identity()
+    data = request.get_json()
+    auid = data['auid']
+    art = Articles.query.filter_by(auid=auid).first()
+    if art and art.author_email != email:
+        return jsonify({'error': 'Save Failed. User not match.'}), 400
+    try:
+        db.session.delete(art)
+        db.session.commit()
+        return jsonify({'message': 'Deleted'}), 201
+    except Exception as e:
+        return jsonify({'error': 'Delete Failed'}), 400
+
+# Update User (Not Password)
+@app.route('/api/user', methods=['PUT'])
+@jwt_required()
+def updateUser():
+    email = get_jwt_identity()
+    data = request.get_json()
+    user = Users.query.filter_by(email=email).first()
+    if user:
+        if data['username'] and user.usr != data['username']:
+            user.usr = data['username']
+        if data['avt'] and user.avt != data['avt']:
+            user.avt = data['avt']
+        if data['desc'] and user.usr_desc != data['desc']:
+            user.usr_desc = data['desc']
+        try:
+            db.session.commit()
+            return jsonify({'message': 'Updated'}), 201
+        except Exception as e:
+            return jsonify({'error': 'Update Failed'}), 400
+    else:
+        return jsonify({'error': 'No User Found'}), 404
 
 if __name__ == '__main__':
     # generateHTML(filePath + '/static/markdown')

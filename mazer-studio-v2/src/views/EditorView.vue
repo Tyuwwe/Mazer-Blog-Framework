@@ -54,15 +54,13 @@ if (localStorage.getItem('lang') == 'en') {
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" @click="submitMeta()">{{ $t('editor.modal_form_submit')
-            }}</button>
+          <button type="submit" class="btn btn-primary" @click="submitMeta()">{{ $t('editor.modal_form_submit')}}</button>
         </div>
       </div>
     </div>
   </div>
 
-  <button id="modalHideBtn" style="display: none;" type="button" data-bs-toggle="modal"
-    data-bs-target="#createModel"></button>
+  <button id="modalHideBtn" style="display: none;" type="button" data-bs-toggle="modal" data-bs-target="#createModel"></button>
   <input ref="file" id="coverIptHid" style="display: none;" type="file" @change="getFileData">
   <input accept=".md" ref="mdFile" id="mdFileIptHid" style="display: none;" type="file" @change="getMarkdownLocal">
 

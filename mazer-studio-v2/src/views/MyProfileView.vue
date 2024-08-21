@@ -6,15 +6,14 @@ import CopyRight from '../components/CopyRight.vue'
     <div class="myProfile-container">
         <div class="myProfile-top">
             <div class="myAvatar">
-                <img class="myAvatar-img" :src="userData.avt" alt="Avatar">
+                <img class="myAvatar-img" :src="serverUrl + userData.avt" alt="Avatar">
             </div>
             <div class="myProfile">
                 <div class="myProfile-name">{{ userData.usr }}</div>
                 <div class="myProfile-desc">{{ userData.usr_desc }}</div>
             </div>
             <div class="myProfileBtns">
-                <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> {{ $t('profile.edit')
-                    }}</button>
+                <button @click="editProfile()" type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i> {{ $t('profile.edit')}}</button>
             </div>
         </div>
         <div class="myProfile-bottom">
@@ -41,7 +40,7 @@ import CopyRight from '../components/CopyRight.vue'
                             <i class="bi bi-nut-fill"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top"
-                            :data-bs-title="$t('profile.delete_art')">
+                            :data-bs-title="$t('profile.delete_art')" @click="deleteArticle(article.auid)">
                             <i class="bi bi-trash3-fill"></i>
                         </button>
                     </div>
@@ -66,7 +65,8 @@ export default {
                 email: "",
                 avt: "/static/image/default.jpg",
             },
-            articles: []
+            articles: [],
+            serverUrl: this.$server
         }
     },
     methods: {
@@ -75,6 +75,20 @@ export default {
         },
         editArticle(pData) {
             this.$router.push({ name: "editor", query: { 'auid': pData } })
+        },
+        async deleteArticle(pData) {
+            const response = await axios.delete(this.$server + '/api/article', {
+                headers: {
+                    'Authorization': 'Bearer ' + this.jwt,
+                },
+                data: {
+                    auid: pData
+                }
+            });
+            this.fetchUserData();
+        },
+        editProfile() {
+            this.$router.push({ name: "editprofile" })
         },
         initTooltips() {
             const tooltipTriggers = document.getElementsByClassName('article-btns');
@@ -140,7 +154,7 @@ export default {
 
 .myProfile-container {
     max-width: 1200px;
-    min-width: 400px;
+    min-width: 350px;
     width: 75%;
     margin: auto;
     margin-top: 100px;
@@ -232,6 +246,7 @@ export default {
     font-size: .75rem;
     color: var(--bs-secondary-color);
     display: flex;
+    flex-wrap: wrap;
 }
 
 .article-date,
