@@ -42,6 +42,7 @@ You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-
 * Performance Optimization (Redis Cache Server, etc.)
 * Delete User Account Function
 * Article Comments
+* Sensitive Word Detection
 * Bug Fixes
 
 ## Installation
