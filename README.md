@@ -2,9 +2,9 @@
 
 ![Logo](./src/logo.svg)
 
-# Mazer-Blog-Framework
+# Mazer Blog Framework
 
-<img src="https://img.shields.io/badge/Latest-1.9.4-red.svg" alt="mbf">
+<img src="https://img.shields.io/badge/Latest-1.9.5-red.svg" alt="mbf">
 <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="python">
 <img src="https://img.shields.io/badge/Node.js-v20+-rgb(67,141,64).svg" alt="node">
 <img src="https://img.shields.io/badge/Vue.js-v3-rgb(53,73,94).svg" alt="vue">
@@ -12,12 +12,37 @@
 <img src="https://img.shields.io/badge/Flask-v3-rgb(58,169,191).svg" alt="flask">
 
 <br>
-An All-in-one Blog Framework
+An OOTB All-in-one Blog Framework
 <br>
 
 You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-Framework/releases)
 
 </div>
+
+## Release Info
+
+### What's Working?
+
+* User Registeration & Login
+* Online Markdown Editor (Write Markdown with Live Preview, Open Local FIle)
+* User Profile Modify (Username, Password, Description)
+* Article Management (Article Cover, Tags, Title, Content, Language, Delete Article)
+* Multi-language Support (English (US), 中文（简体）)
+* Secured Connections Between Users and Servers (JWT)
+* A Clean GUI Look Good on Most Mobile/Desktop Devices
+* Like Article
+
+### To Do List
+
+* Full User Profile Modification (User Privicy Settings, etc.)
+* A GUI way to add new Language
+* Theme Function (At least Color Scheme settings)
+* A OOBE First Launch UI (Like Wordpress)
+* Compatibility test on Linux
+* Performance Optimization (Redis Cache Server, etc.)
+* Delete User Account Function
+* Article Comments
+* Bug Fixes
 
 ## Installation
 

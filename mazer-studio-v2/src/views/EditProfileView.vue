@@ -55,7 +55,7 @@ import CopyRight from '../components/CopyRight.vue'
                         </div>
                         <div class="mb-3">
                             <label for="PasswdIpt" class="form-label">{{ $t('edit.password') }}</label>
-                            <input v-model="userForm.old_password" id="OldPasswdIpt" type="password" class="form-control rounded-start" :placeholder="$t('edit.psw_ph')" aria-label="New Password" autocomplete="new-password">
+                            <input v-model="userForm.old_password" id="OldPasswdIpt" type="password" class="form-control rounded mb-1" :placeholder="$t('edit.psw_ph_old')" aria-label="New Password" autocomplete="new-password">
                             <div class="input-group mb-1">
                                 <input type="password" hidden>
                                 <input @input="pswOnChange()" v-model="userForm.password" id="PasswdIpt" type="password" class="form-control rounded-start" :placeholder="$t('edit.psw_ph')" aria-label="New Password" autocomplete="new-password">

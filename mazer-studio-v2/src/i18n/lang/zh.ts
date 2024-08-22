@@ -60,7 +60,7 @@ export default {
     },
     all: {
         filter: '筛选',
-        filter_text: '通过标题筛选',
+        filter_text: '通过标题和标签筛选',
         lang: '语言',
         all_lang: '全部语言',
         sort_by: '排序',
@@ -97,6 +97,7 @@ export default {
         lvl_high: '强',
         lvl_vhigh: '很强',
         psw_ph: '输入新密码',
+        psw_ph_old: '输入旧密码',
         usr_ph: '输入新用户名',
         delete_acc: '永久删除我的账号',
         warning: '警告！',

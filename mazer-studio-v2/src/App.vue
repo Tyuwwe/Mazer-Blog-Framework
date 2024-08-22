@@ -26,20 +26,23 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
           <li class="nav-item">
             <a class="nav-link active" @click="enterView('all')" href="#">{{ $t('topbar.all') }}</a>
           </li>
+        </ul>
+        <ul class="navbar-nav mb-lg-0 nav-right">
           <li class="nav-item nav-flex">
-          <li class="nav-item">
-            <a class="nav-link" @click="setTheme(getSwitchTheme())"><i id="themeIco"
-                class="bi bi-brightness-high-fill"></i></a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false"><i class="bi bi-translate"></i></a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" @click="setLang('zh')" href="#"><span class="flag-icon flag-icon-cn"></span>
-                  中文(简体)</a></li>
-              <li><a class="dropdown-item" @click="setLang('en')" href="#"><span class="flag-icon flag-icon-us"></span>
-                  English(US)</a></li>
-            </ul>
+            <li class="nav-item">
+              <a class="nav-link" @click="setTheme(getSwitchTheme())"><i id="themeIco"
+                  class="bi bi-brightness-high-fill"></i></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="bi bi-translate"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" @click="setLang('zh')" href="#"><span class="flag-icon flag-icon-cn"></span>
+                    中文(简体)</a></li>
+                <li><a class="dropdown-item" @click="setLang('en')" href="#"><span class="flag-icon flag-icon-us"></span>
+                    English(US)</a></li>
+              </ul>
+            </li>
           </li>
           <li v-if="bNotHaveToken" class="nav-item">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModel">{{
@@ -47,8 +50,8 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
           </li>
           <li v-else class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false"><i class="bi bi-person-circle"></i></a>
-            <ul class="dropdown-menu">
+              aria-expanded="false"><i class="bi bi-person-circle"></i> {{ userEmail }}</a>
+            <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" href="#" @click="enterView('editor')"><i class="bi bi-pen-fill"></i>
                   {{ $t('topbar.write') }}</a></li>
               <li><a class="dropdown-item" href="#" @click="enterView('profile')"><i class="bi bi-person-square"></i>
@@ -57,12 +60,7 @@ const { t, locale } = useI18n({ inheritLocale: true, useScope: 'local' });
                   {{ $t('topbar.logout') }}</a></li>
             </ul>
           </li>
-          </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" :placeholder="$t('topbar.search_text')" aria-label="Search">
-          <button style="width: 80px;" class="btn btn-outline-success" type="submit">{{ $t('topbar.search') }}</button>
-        </form>
       </div>
     </div>
   </nav>
@@ -194,6 +192,7 @@ export default {
       lang: "",
       bLogin: true,
       bNotHaveToken: true,
+      userEmail: '',
       submitForm: {
         usr: "",
         email: "",
@@ -283,6 +282,7 @@ export default {
             'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
           },
         })
+        this.userEmail = res.data.email;
       }
       catch (error) {
         this.showToast({
@@ -308,6 +308,7 @@ export default {
         localStorage.setItem('email', res.data.email);
         this.bNotHaveToken = false;
         document.getElementById('dismissModalBtn').click();
+        this.userEmail = res.data.email;
       }
       catch (error) {
         this.showToast({
@@ -390,6 +391,10 @@ nav {
 
 .nav-flex {
   display: flex;
+}
+
+.nav-link:hover {
+  color: var(--bs-primary) !important;
 }
 
 @media only screen and (max-width: 991px) {

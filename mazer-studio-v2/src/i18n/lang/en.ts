@@ -60,7 +60,7 @@ export default {
     },
     all: {
         filter: 'Filter',
-        filter_text: 'Filter by title',
+        filter_text: 'Filter by title and tags',
         lang: 'Language',
         all_lang: 'All Language',
         sort_by: 'Sort by',
@@ -97,6 +97,7 @@ export default {
         lvl_high: 'Strong',
         lvl_vhigh: 'Very Strong',
         psw_ph: 'Enter new password',
+        psw_ph_old: 'Enter old password',
         usr_ph: 'Enter new username',
         delete_acc: 'Permanently Delete My Account',
         warning: 'Warning!',
