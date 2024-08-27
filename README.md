@@ -30,9 +30,10 @@ You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-
 * Multi-language Support (English (US), 中文（简体）)
 * Secured Connections Between Users and Servers (JWT)
 * A Clean GUI Look Good on Most Mobile/Desktop Devices
+* Server Statistics & User Management
 * Like Article
 
-### To Do List
+### To-Do List
 
 * Full User Profile Modification (User Privicy Settings, etc.)
 * A GUI way to add new Language
@@ -64,7 +65,7 @@ All needed packages are listed in `./mazer-studio-v2-server/requirements.txt` fi
 
 ### 3. Pre-firstrun
 
-According your SQL server configuraion, you might have to modify the server config in `./mazer-studio-v2-server/config.py` file, which is list below.
+According to your SQL server configuraion, you might have to modify the server config in `./mazer-studio-v2-server/config.py` file, which is listed below.
 
 ```
 SQLALCHEMY_DATABASE_URI = 'postgresql://{Username}:{Password}@{IP}/{DB}'
