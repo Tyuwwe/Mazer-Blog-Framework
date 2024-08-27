@@ -43,6 +43,7 @@ You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-
 * Delete User Account Function
 * User Roles & Management
 * Article Comments
+* Sensitive Word Detection
 * Bug Fixes
 
 ## Installation
