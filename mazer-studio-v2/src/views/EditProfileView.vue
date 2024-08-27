@@ -1,4 +1,5 @@
 <script setup>
+import { values } from '@kangc/v-md-editor';
 import CopyRight from '../components/CopyRight.vue'
 </script>
 
@@ -8,6 +9,7 @@ import CopyRight from '../components/CopyRight.vue'
             <div class="col-3 cols-left">
                 <div class="list-group" id="list-tab" role="tablist">
                     <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">{{ $t('edit.home') }}</a>
+                    <a v-show="userForm.role == 4" class="list-group-item list-group-item-action" id="list-management-list" data-bs-toggle="list" href="#list-management" role="tab" aria-controls="list-management" @click="fetchAdmin()">{{ $t('edit.management') }}</a>
                     <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">{{ $t('edit.profile') }}</a>
                     <a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">{{ $t('edit.message') }}</a>
                     <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings" role="tab" aria-controls="list-settings">{{ $t('edit.account') }}</a>
@@ -61,7 +63,7 @@ import CopyRight from '../components/CopyRight.vue'
                                 <input @input="pswOnChange()" v-model="userForm.password" id="PasswdIpt" type="password" class="form-control rounded-start" :placeholder="$t('edit.psw_ph')" aria-label="New Password" autocomplete="new-password">
                                 <button class="btn btn-outline-secondary" type="button" id="button-addon2">{{ $t('edit.apply') }}</button>
                             </div>
-                            <div style="height: 5px" class="progress mb-1" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div style="height: 5px" class="progress mb-1" role="progressbar" aria-label="PSW Safety" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                                 <div id="pswProgress" class="progress-bar" style="width: 0%"></div>
                             </div>
                             <div class="form-text">{{ $t('edit.password_text') }}<span style="color: var(--bs-danger);" id="sLvl">{{ secureLvl }}</span></div>
@@ -70,7 +72,60 @@ import CopyRight from '../components/CopyRight.vue'
                     </div>
                     <div class="tab-pane fade" id="list-privacy" role="tabpanel" aria-labelledby="list-privacy-list">
                         <h2 class="mb-3">{{ $t('edit.privacy_title') }}</h2>
-                        <div class="wip">{{ $t('common.wip') }}</div>
+                        <button type="button" class="btn btn-outline-warning" style="width: 100%;">{{ $t('edit.delete_ls') }}</button>
+                        <div class="form-text">{{ $t('edit.delete_ls_text') }}<br><span style="font-weight: bold;">{{ $t('edit.delete_ls_text_bold') }}</span></div>
+                    </div>
+                    <div class="tab-pane fade" id="list-management" role="tabpanel" aria-labelledby="list-management-list">
+                        <h2 class="mb-3">{{ $t('edit.management_title') }}</h2>
+                        <h3 class="mb-3">{{ $t('edit.management_user_title') }}</h3>
+                        <div class="manage-user-container mb-4">
+                            <div class="manage-user-item col-top">
+                                <div class="manage-user-usr">{{ $t('edit.col_usr') }}</div>
+                                <div class="manage-user-email">{{ $t('edit.col_email') }}</div>
+                                <div class="manage-user-role">{{ $t('edit.col_role') }}</div>
+                                <div class="manage-user-btns ms-2">{{ $t('edit.col_btns') }}</div>
+                            </div>
+                            <div v-for="user in allUserData" :key="user.id" class="manage-user-item">
+                                <div class="manage-user-usr">{{ user.usr }}</div>
+                                <div class="manage-user-email">{{ user.email }}</div>
+                                <div class="manage-user-role">{{ userRoles[user.usr_role] }}</div>
+                                <div class="manage-user-btns ms-2">
+                                    <button class="btn btn-primary btn-circle"><i class="bi bi-eye-fill"></i></button>
+                                    <button class="btn btn-secondary btn-circle"><i class="bi bi-nut-fill"></i></button>
+                                    <button class="btn btn-danger btn-circle"><i class="bi bi-trash3-fill"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="mb-3">{{ $t('edit.management_server_title') }}</h3>
+                        <div class="manage-server-container mb-3">
+                            <div class="manage-cpu mb-3">
+                                <div class="manage-cpu-left me-3"><i class="bi bi-windows"></i></div>
+                                <div class="manage-cpu-right">
+                                    <div class="manage-cpu-name">{{ $t('edit.server_system') }}{{ serverInfoData.system }} {{ serverInfoData.release }}</div>
+                                    <div class="manage-cpu-cores">{{ $t('edit.system') }}{{ serverInfoData.platform }}</div>
+                                </div>
+                            </div>
+                            <div class="manage-cpu mb-1">
+                                <div class="manage-cpu-left me-3"><i class="bi bi-cpu-fill"></i></div>
+                                <div class="manage-cpu-right">
+                                    <div class="manage-cpu-name">{{ serverInfoData.cpu.model }}</div>
+                                    <div class="manage-cpu-cores">{{ serverInfoData.cpu.cores }} {{ $t('edit.cores') }} / {{ serverInfoData.cpu.threads }} {{ $t('edit.threads') }} / {{ $t('edit.cpu_usage') }}{{ serverRealtime.cpu }}%</div>
+                                </div>
+                            </div>
+                            <div style="height: 5px" class="progress mb-3" role="progressbar" aria-label="CPU Usage" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div id="cpuUsageProgress" class="progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="manage-cpu mb-1">
+                                <div class="manage-cpu-left me-3"><i class="bi bi-memory"></i></div>
+                                <div class="manage-cpu-right">
+                                    <div class="manage-cpu-name">{{ (serverRealtime.memory*serverInfoData.ram_total/100).toFixed(2) }}GB / {{ serverInfoData.ram_total }}GB</div>
+                                    <div class="manage-cpu-cores">{{ $t('edit.ram') }}{{ serverRealtime.memory }}%</div>
+                                </div>
+                            </div>
+                            <div style="height: 5px" class="progress mb-1" role="progressbar" aria-label="RAM Usage" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div id="ramUsageProgress" class="progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,13 +173,84 @@ export default {
                 old_password: '',
                 desc: '',
                 email: '',
-                avt: ''
+                avt: '',
+                role: 0
+            },
+            allUserData: {},
+            serverInfoData: {
+                cpu: {
+                    modal: ''
+                }
+            },
+            serverRealtime: {
+                cpu: 0,
+                memory: 0
             },
             secureLvl: this.$t('edit.lvl_low'),
-            serverUrl: this.$server
+            serverUrl: this.$server,
+            userRoles: {
+                1: this.$t('edit.viewer'),
+                2: this.$t('edit.reader'),
+                3: this.$t('edit.editor'),
+                4: this.$t('edit.admin'),
+            }
         }
     },
     methods: {
+        fetchAdmin() {
+            this.fetchUsersAdmin();
+            this.fetchServerInfoAdmin();
+            setInterval(() => {
+                this.fetchServerInfoAdminRealtime()
+            }, 2000)
+        },
+        async fetchServerInfoAdminRealtime() {
+            const cpubar = document.getElementById('cpuUsageProgress');
+            const rambar = document.getElementById('ramUsageProgress');
+            const res = axios.get(this.$server + "/api/serverInfoRealtime", {
+                headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+                }
+            })
+            res.then((value) => {
+                this.serverRealtime = value.data;
+                cpubar.style = "width: " + value.data.cpu + "%";
+                rambar.style = "width: " + value.data.memory + "%";
+                if (value.data.cpu >= 75) {
+                    cpubar.setAttribute('class', 'progress-bar bg-danger')
+                }
+                else {
+                    cpubar.setAttribute('class', 'progress-bar bg-success')
+                }
+                if (value.data.memory >= 75) {
+                    rambar.setAttribute('class', 'progress-bar bg-danger')
+                }
+                else {
+                    rambar.setAttribute('class', 'progress-bar bg-success')
+                }
+            })
+        },
+        async fetchUsersAdmin() {
+            const res = axios.get(this.$server + "/api/userAll", {
+                headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+                }
+            })
+            res.then((value) => {
+                this.allUserData = value.data.users;
+            })
+        },
+        async fetchServerInfoAdmin() {
+            const res = axios.get(this.$server + "/api/serverInfo", {
+                headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+                }
+            })
+            res.then((value) => {
+                this.serverInfoData = value.data.info;
+                console.log(this.serverInfoData)
+            })
+        },
         async updateUserData() {
             let putData = {
                 username: this.userForm.username,
@@ -169,6 +295,7 @@ export default {
             this.userForm.desc = response.data.usr_desc;
             this.userForm.email = response.data.email;
             this.userForm.avt = response.data.avt;
+            this.userForm.role = response.data.role;
             // console.log(response.data)
         },
         async handleDel() {
@@ -256,6 +383,80 @@ export default {
     filter: brightness(0.9);
 }
 
+.manage-user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid 1px var(--bs-secondary-color);
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.col-top {
+    font-weight: bold;
+    background-color: var(--bs-secondary-bg);
+}
+
+.manage-user-item:hover {
+    background-color: var(--bs-secondary-bg);
+}
+
+.manage-user-usr, .manage-user-email {
+    width: 25%;
+    text-wrap: nowrap;
+    text-overflow:ellipsis;
+    overflow: hidden;
+}
+
+.manage-user-role {
+    width: 70px;
+    text-wrap: nowrap;
+    display: flex;
+    justify-content: end;
+    text-align: end;
+}
+
+.manage-user-usr, .manage-user-email {
+    padding-right: 10px;
+}
+
+.manage-user-btns {
+    display: flex;
+    width: 120px;
+    justify-content: end;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+    margin-left: 5px;
+}
+
+.manage-cpu {
+    display: flex;
+    justify-content: space-between;
+}
+
+.manage-cpu-left {
+    font-size: 2rem;
+}
+
+.manage-cpu-right {
+    flex: 1;
+}
+
+.manage-cpu-name {
+    font-size: 1.15rem;
+}
+
+.manage-cpu-cores {
+    font-size: 0.85rem;
+}
+
 @media only screen and (max-width: 750px) {
     .editCols {
         flex-direction: column;
@@ -267,6 +468,10 @@ export default {
 
     .cols-left {
         margin-bottom: 12px;
+    }
+
+    .manage-user-item {
+        flex-wrap: nowrap;
     }
 }
 </style>

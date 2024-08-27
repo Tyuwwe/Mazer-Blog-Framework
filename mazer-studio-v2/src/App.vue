@@ -248,7 +248,8 @@ export default {
       localStorage.setItem('checkedLS', 'true');
     },
     logout() {
-      localStorage.clear();
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('email');
       this.bLogin = true;
       this.bNotHaveToken = true;
       this.showToast({

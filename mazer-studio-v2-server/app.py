@@ -9,7 +9,7 @@ from sqlalchemy import or_
 from config import Config
 from datetime import datetime
 from exts import jwt
-import mistune, os, glob, uuid
+import mistune, os, glob, uuid, platform, psutil
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -21,7 +21,7 @@ db = SQLAlchemy(app)
 filePath = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_IMG_EXT = set(['png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF', 'webp', 'WEBP', 'avif', 'AVIF', 'jpeg', 'JPEG', 'svg', 'SVG'])
- 
+
 def allowed_img(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_IMG_EXT
 
@@ -53,6 +53,16 @@ class Users(db.Model):
     usr_role = db.Column(db.Integer, nullable=False)
     usr_desc = db.Column(db.Text, nullable=False)
     avt = db.Column(db.String(200), default='/static/image/default.jpg')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'usr': self.usr,
+            'email': self.email,
+            'usr_role': self.usr_role,
+            'usr_desc': self.usr_desc,
+            'avt': self.avt
+        }
     
 
 class Syslog(db.Model):
@@ -125,18 +135,43 @@ def generateHTMLbyFile(file):
             w.write(content)
         return '/static/article/' + fileName
 
-# Test Only
-@app.route('/test/<int:test_id>', methods=['GET'])
-def test(test_id):
-    fileAddr = filePath + '/example/1.md'
-    if test_id == 2 :
-        fileAddr = filePath + '/example/example.md'
-    with open(fileAddr, 'r', encoding='utf-8') as file:
-        mdText = file.read()
-        markdown = mistune.create_markdown(renderer=HighlightRenderer(), plugins=['math', 'table'])
-        
-        html = markdown(mdText)
-        return jsonify({'msg': 'Test Good', 'html': html}), 200
+# Get System Info
+def get_system_info():
+    ram_total = round(psutil.virtual_memory().total / 1024**3, 2)
+    system_info = {
+        'system': platform.system(),
+        'release': platform.release(),
+        'version': platform.version(),
+        'machine': platform.machine(),
+        'cpu': get_cpu(),
+        'platform': platform.platform(),
+        'ram_total' : ram_total,
+    }
+    return system_info
+
+def get_cpu():
+    model = None
+    try:
+        cmd = "wmic path win32_processor get name"
+        cmd_cores = "wmic path win32_processor get NumberOfCores"
+        model = os.popen(cmd).read().replace("\n", '').replace("Name", '').replace('                                       ', '').replace('  ','')
+        cores = os.popen(cmd_cores).read().replace("\n", '').replace("NumberOfCores", '').replace(' ', '')
+        threads = os.cpu_count()
+        return {
+            'model': model,
+            'cores': cores,
+            'threads': threads
+        }
+    except Exception as e:
+        print("Error while retrieving CPU model:", e)
+        return None
+
+def checkUserRole(email):
+    user = Users.query.filter_by(email=email).first()
+    if user and user.usr_role:
+        return user.usr_role
+    else:
+        return False
 
 # New Article
 @app.route('/api/new_article', methods=['GET'])
@@ -194,7 +229,7 @@ def getSingleUser():
     email = get_jwt_identity()
     user = Users.query.filter_by(email=email).first()
     if user:
-        return jsonify({'usr': user.usr, 'email': user.email, 'usr_desc': user.usr_desc, 'avt': user.avt}), 201
+        return jsonify({'usr': user.usr, 'email': user.email, 'usr_desc': user.usr_desc, 'avt': user.avt, 'role': user.usr_role}), 201
     else:
         return jsonify({'error': 'Invalid request'}), 401
 
@@ -431,7 +466,7 @@ def deleteArticle():
     except Exception as e:
         return jsonify({'error': 'Delete Failed'}), 400
 
-# Update User (Not Password)
+# Update User (No Password)
 @app.route('/api/user', methods=['PUT'])
 @jwt_required()
 def updateUser():
@@ -453,6 +488,46 @@ def updateUser():
     else:
         return jsonify({'error': 'No User Found'}), 404
 
+# Get All User (Admin Only)
+@app.route('/api/userAll', methods=['GET'])
+@jwt_required()
+def getUserAll():
+    email = get_jwt_identity()
+    role = checkUserRole(email)
+    if role == 4:
+        users = Users.query.all()
+        users_list = [user.serialize() for user in users]
+        return jsonify({'message': 'Get successful!', 'users': users_list}), 201
+    else:
+        return jsonify({'error': 'User not found or User role not match'}), 400
+
+# Get Sys Info (Admin Only)
+@app.route('/api/serverInfo', methods=['GET'])
+@jwt_required()
+def getServerInfo():
+    email = get_jwt_identity()
+    role = checkUserRole(email)
+    if role == 4:
+        return jsonify({'message': 'Get successful!', 'info': get_system_info()}), 201
+    else:
+        return jsonify({'error': 'User role not match'}), 400
+
+# Get Server Info Realtime (Admin Only)
+@app.route('/api/serverInfoRealtime', methods=['GET'])
+@jwt_required()
+def get_server_statistics():
+    email = get_jwt_identity()
+    role = checkUserRole(email)
+    if role == 4:
+        data = psutil.virtual_memory()
+        memory = int(round(data.percent))
+        cpu_usage = psutil.cpu_percent(interval=2)
+        return jsonify({
+            'cpu': cpu_usage,
+            'memory': memory
+        }), 200
+    else:
+        return jsonify({'error': 'User role not match'}), 400
+
 if __name__ == '__main__':
-    # generateHTML(filePath + '/static/markdown')
     app.run(debug=True)

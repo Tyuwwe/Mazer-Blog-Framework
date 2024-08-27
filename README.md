@@ -4,7 +4,7 @@
 
 # Mazer Blog Framework
 
-<img src="https://img.shields.io/badge/Latest-1.9.5-red.svg" alt="mbf">
+<img src="https://img.shields.io/badge/Latest-1.9.6-red.svg" alt="mbf">
 <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="python">
 <img src="https://img.shields.io/badge/Node.js-v20+-rgb(67,141,64).svg" alt="node">
 <img src="https://img.shields.io/badge/Vue.js-v3-rgb(53,73,94).svg" alt="vue">
@@ -41,6 +41,7 @@ You can download the build from [releases](https://github.com/Tyuwwe/Mazer-Blog-
 * Compatibility test on Linux
 * Performance Optimization (Redis Cache Server, etc.)
 * Delete User Account Function
+* User Roles & Management
 * Article Comments
 * Bug Fixes
 

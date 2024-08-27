@@ -4,7 +4,7 @@ CREATE TABLE users (
     usr VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     psw TEXT NOT NULL,
-    usr_role INT NOT NULL,
+    usr_role INT NOT NULL,/* 1: Viewer / 2: Reader / 3: Editor / 4: Administrator */
     usr_desc TEXT,
 	avt VARCHAR(200) DEFAULT '/static/image/default.jpg'
 );
