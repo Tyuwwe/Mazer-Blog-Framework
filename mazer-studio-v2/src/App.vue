@@ -361,8 +361,15 @@ nav {
 
 .navbar {
   transition: background-color 0.2s;
-  background-color: var(--bs-body-bg);
   box-shadow: var(--bs-tertiary-color) 0px 1px 1px;
+  background-image: radial-gradient(transparent 1px,var(--bs-body-bg) 1px);
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(4px);
+  -webkit-backdrop-filter: saturate(50%) blur(4px);
+}
+
+.navbar[dark] {
+  background-image: radial-gradient(transparent 1px,var(--bs-body-bg) 1px);
 }
 
 .nav-link {

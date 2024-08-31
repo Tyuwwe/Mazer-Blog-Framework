@@ -248,7 +248,13 @@ export default {
             })
             res.then((value) => {
                 this.serverInfoData = value.data.info;
-                console.log(this.serverInfoData)
+                if (this.serverInfoData.system == 'Windows') {
+                    const ver = this.serverInfoData.version.split('.')[2];
+                    if (ver >= 22000) {
+                        this.serverInfoData.release = '11';
+                    }
+                }
+                // console.log(this.serverInfoData)
             })
         },
         async updateUserData() {
